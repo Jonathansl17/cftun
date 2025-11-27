@@ -1,0 +1,21 @@
+tunnel: 594e106e-8835-4117-a815-752fe2c77902
+credentials-file: /home/jserver/.cloudflared/594e106e-8835-4117-a815-752fe2c77902.json
+
+ingress:
+  - hostname: api.mytry.dev
+    service: http://localhost:5000
+
+  - hostname: mytry.dev
+    service: http://localhost:5174
+
+  - hostname: www.mytry.dev
+    service: http://localhost:5174
+
+  - hostname: finance.mytry.dev
+    service: http://localhost:5175
+
+  - hostname: api.finance.mytry.dev
+    service:  http://localhost:5001
+
+  - service: http_status:404
+
