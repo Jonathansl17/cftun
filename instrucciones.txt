@@ -14,7 +14,8 @@ Todo por túnel. Todo en el mismo dominio.
 • Tener Cloudflared instalado en el servidor:
 
 sudo apt update
-sudo apt install cloudflared -y
+wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+sudo dpkg -i cloudflared-linux-*.deb
 
 • Autenticarte con Cloudflare:
 
