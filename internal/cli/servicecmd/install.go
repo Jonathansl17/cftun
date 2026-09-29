@@ -6,7 +6,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/Jonathansl17/cftun/internal/apperr"
-	"github.com/Jonathansl17/cftun/internal/cli/uikit"
 	"github.com/Jonathansl17/cftun/internal/msg"
 	"github.com/Jonathansl17/cftun/internal/service"
 	"github.com/Jonathansl17/cftun/internal/store"
@@ -20,7 +19,7 @@ func (g *Group) installCmd() *cobra.Command {
 			return g.InstallService(cmd.Context())
 		},
 	}
-	return mark(uikit.RequireCloudflared(cmd), msg.MenuServiceInstall, orderInstall)
+	return mark(cmd, msg.MenuServiceInstall, orderInstall)
 }
 
 func (g *Group) InstallService(ctx context.Context) error {
