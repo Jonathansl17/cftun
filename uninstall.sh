@@ -4,7 +4,7 @@
 # Environment:
 #   CFTUN_INSTALL_DIR         directory holding cftun (default: /usr/local/bin)
 #   CFTUN_YES=1               do not ask for confirmation
-#   CFTUN_KEEP_CLOUDFLARED=1  only remove the cftun binary
+#   CFTUN_KEEP_CLOUDFLARED=1  only remove the cftun binary and completions
 set -euo pipefail
 
 readonly BIN_NAME="cftun"
@@ -43,6 +43,7 @@ run_teardown() {
 
 remove_binary() {
   local bin="$1"
+  [[ -e "$bin" ]] || return 0
   if [[ -w "$(dirname "$bin")" ]]; then
     rm -f -- "$bin"
   else

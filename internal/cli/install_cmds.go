@@ -46,7 +46,7 @@ func ensureInstalled(ctx context.Context, a *App, force bool) error {
 }
 
 func newUninstallCmd(a *App) *cobra.Command {
-	var yes bool
+	var yes, keepCftun bool
 	cmd := &cobra.Command{
 		Use:   "uninstall",
 		Short: msg.UninstallShort,
@@ -61,14 +61,15 @@ func newUninstallCmd(a *App) *cobra.Command {
 					return errCancelled
 				}
 			}
-			return uninstall(cmd.Context(), a)
+			return uninstall(cmd.Context(), a, keepCftun)
 		},
 	}
 	cmd.Flags().BoolVarP(&yes, "yes", "y", false, msg.FlagYes)
+	cmd.Flags().BoolVar(&keepCftun, "keep-cftun", false, msg.FlagKeepCftun)
 	return cmd
 }
 
-func uninstall(ctx context.Context, a *App) error {
+func uninstall(ctx context.Context, a *App, keepCftun bool) error {
 	steps := teardown.Steps{
 		Runner:            a.Runner,
 		Load:              a.Store.Load,
@@ -88,7 +89,10 @@ func uninstall(ctx context.Context, a *App) error {
 		return err
 	}
 	a.Printf(msg.InfoUninstalled)
-	return nil
+	if keepCftun {
+		return nil
+	}
+	return removeCftun(ctx, a)
 }
 
 func errConfigMissing(a *App) error {

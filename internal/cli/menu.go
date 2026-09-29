@@ -72,6 +72,9 @@ func browse(a *App, root *cobra.Command, title string, entries []entry, leave st
 		if err := dispatch(a, root, entries[i]); err != nil {
 			return err
 		}
+		if a.CftunRemoved {
+			return nil
+		}
 	}
 }
 

@@ -14,10 +14,12 @@ already done are detected and skipped, so it is safe to run it again.
 Without a domain on Cloudflare, it starts a temporary tunnel instead.`
 
 	InstallShort   = "Install cloudflared using the distribution's native method"
-	UninstallShort = "Remove cloudflared and everything cftun created"
+	UninstallShort = "Remove cloudflared, everything cftun created and cftun itself"
 	UninstallLong  = `Stops and unregisters the service, deletes the DNS records of every route
 (needs an API token), deletes the tunnel, removes the package, the config,
-its backup, the credentials in ~/.cloudflared and the saved API token.`
+its backup, the credentials in ~/.cloudflared and the saved API token. Then
+removes the cftun binary and its shell completions unless --keep-cftun is
+set. If any step fails, cftun is kept so the command can be run again.`
 
 	LoginShort       = "Authorize cloudflared with your Cloudflare account"
 	TokenShort       = "Manage the API token used to delete DNS records"
@@ -78,4 +80,5 @@ const (
 	FlagForceInit    = "overwrite an existing config without asking"
 	FlagForceInstall = "reinstall even if cloudflared is present"
 	FlagYes          = "do not ask for confirmation"
+	FlagKeepCftun    = "keep the cftun binary and its completions"
 )

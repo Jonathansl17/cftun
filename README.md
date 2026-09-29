@@ -123,7 +123,7 @@ the subcommands below.
 | `cftun service install` | Register, enable and start the service |
 | `cftun service start\|stop\|restart\|status\|enable\|disable\|logs` | Control the service |
 | `cftun token set\|status\|clear` | Manage the API token |
-| `cftun uninstall [-y]` | Remove everything, leaving the machine as it was |
+| `cftun uninstall [-y] [--keep-cftun]` | Remove everything, including cftun itself, leaving the machine as it was |
 
 Missing values are asked interactively, so `cftun add` alone asks for the
 hostname and the port. `add`, `rm` and `edit` accept `--no-dns` and
@@ -207,13 +207,16 @@ curl -fsSL https://raw.githubusercontent.com/Jonathansl17/cftun/master/uninstall
 | `CFTUN_KEEP_CLOUDFLARED` | `0` | Set to `1` to remove only the cftun binary |
 | `CFTUN_INSTALL_DIR` | `/usr/local/bin` | Where cftun was installed |
 
-To keep cftun and only remove cloudflared, run `cftun uninstall` instead.
-Either way, it stops and unregisters the service, deletes the DNS record of
+`cftun uninstall` does the same on its own: after the cleanup it also removes
+the cftun binary and its completion files, and from the interactive menu the
+program then exits. To keep cftun and only remove cloudflared, run
+`cftun uninstall --keep-cftun`. Either way, it stops and unregisters the service, deletes the DNS record of
 every route (with an API token), deletes the tunnel, removes the package and
 deletes `/etc/cloudflared`, `~/.cloudflared`, the logs and the saved token. If
 a step fails, it keeps going and reports every failure at the end; the cftun
 binary and its completion files are only removed once the cleanup
-succeeded, so you can re-run it.
+succeeded, so you can re-run it. Shell completions installed by the package
+are removed with the binary.
 
 ## Troubleshooting
 

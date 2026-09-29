@@ -47,6 +47,8 @@ type App struct {
 	Health     health.Checker
 	Prompt     prompt.Prompter
 	Routes     routes.Manager
+
+	CftunRemoved bool
 }
 
 func NewApp(configPath string, in io.Reader, out io.Writer) (*App, error) {

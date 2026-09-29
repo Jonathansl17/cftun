@@ -22,4 +22,8 @@ const (
 	OSRelease     = "/etc/os-release"
 	SystemdMarker = "/run/systemd/system"
 	InstallPath   = "/usr/local/bin/cloudflared"
+
+	BashCompletion = "/usr/share/bash-completion/completions/cftun"
+	ZshCompletion  = "/usr/share/zsh/site-functions/_cftun"
+	FishCompletion = "/usr/share/fish/vendor_completions.d/cftun.fish"
 )
