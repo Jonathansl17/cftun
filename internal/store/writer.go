@@ -1,4 +1,3 @@
-// Package store loads and saves the cloudflared config file with backups.
 package store
 
 import (
@@ -18,18 +17,14 @@ const (
 	tempFilePattern = "cftun-*"
 )
 
-// Writer persists bytes to a path.
 type Writer interface {
 	WriteFile(ctx context.Context, path string, data []byte) error
 }
 
-// ElevatedWriter writes directly and, when the target is not writable by the
-// current user, falls back to a privileged install of a temporary copy.
 type ElevatedWriter struct {
 	Runner sysexec.Runner
 }
 
-// WriteFile implements Writer.
 func (w ElevatedWriter) WriteFile(ctx context.Context, path string, data []byte) error {
 	err := os.WriteFile(path, data, filePerm)
 	if err == nil {

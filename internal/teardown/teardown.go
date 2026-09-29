@@ -1,4 +1,3 @@
-// Package teardown removes every trace of cloudflared from the machine.
 package teardown
 
 import (
@@ -14,8 +13,6 @@ import (
 	"github.com/Jonathansl17/cftun/internal/sysexec"
 )
 
-// systemPaths are the locations cloudflared reads or writes outside the
-// user's home.
 var systemPaths = []string{
 	"/etc/cloudflared",
 	"/usr/local/etc/cloudflared",
@@ -28,7 +25,6 @@ var systemPaths = []string{
 	"/etc/init.d/cloudflared",
 }
 
-// Steps are the collaborators the teardown drives.
 type Steps struct {
 	Runner    sysexec.Runner
 	Load      func() (*ingress.Document, error)
@@ -41,12 +37,9 @@ type Steps struct {
 	Installed         func(ctx context.Context) bool
 	ServiceRegistered func() bool
 	Report            interface{ Printf(string, ...any) }
-	// Paths are extra files to delete: config, backup, user credentials.
-	Paths []string
+	Paths             []string
 }
 
-// Run executes every step, continuing past failures so one broken piece does
-// not leave the rest behind. All failures are returned together.
 func (s Steps) Run(ctx context.Context) error {
 	var errs []error
 	record := func(step string, err error) {
@@ -72,7 +65,6 @@ func (s Steps) Run(ctx context.Context) error {
 	return errors.Join(errs...)
 }
 
-// removeRoutes deletes DNS records and the tunnel while the cert still exists.
 func (s Steps) removeRoutes(ctx context.Context, doc *ingress.Document, installed bool, record func(string, error)) {
 	for _, rule := range doc.Rules() {
 		record(msg.StepDeleteDNS+" "+rule.Hostname, s.DeleteDNS(ctx, rule.Hostname))

@@ -1,4 +1,3 @@
-// Command cftun manages a Cloudflare Tunnel and its public hostnames.
 package main
 
 import (
@@ -14,7 +13,6 @@ import (
 
 const exitFailure = 1
 
-// version is set at build time with -ldflags "-X main.version=vX.Y.Z".
 var version = "dev"
 
 func main() {

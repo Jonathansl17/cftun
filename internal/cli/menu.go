@@ -9,7 +9,6 @@ import (
 	"github.com/Jonathansl17/cftun/internal/prompt"
 )
 
-// entry is one menu line: either a command path or a submenu.
 type entry struct {
 	label    string
 	path     []string
@@ -53,12 +52,10 @@ var mainMenu = []entry{
 	{label: msg.MenuUninstall, path: []string{"uninstall"}},
 }
 
-// runMenu shows the main menu until the user exits.
 func runMenu(a *App, root *cobra.Command) error {
 	return browse(a, root, msg.MenuTitle, mainMenu, msg.MenuExit)
 }
 
-// browse shows entries plus a leave option and dispatches the choice.
 func browse(a *App, root *cobra.Command, title string, entries []entry, leave string) error {
 	for {
 		labels := make([]string, 0, len(entries)+1)
@@ -78,8 +75,6 @@ func browse(a *App, root *cobra.Command, title string, entries []entry, leave st
 	}
 }
 
-// dispatch opens a submenu or runs a command, reporting command errors
-// without leaving the menu.
 func dispatch(a *App, root *cobra.Command, e entry) error {
 	if e.children != nil {
 		return browse(a, root, e.label, e.children, msg.MenuBack)

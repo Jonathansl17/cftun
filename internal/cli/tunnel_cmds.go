@@ -83,7 +83,6 @@ func deleteTunnel(cmd *cobra.Command, a *App, name string) error {
 	return a.Tunnels.DeleteTunnel(cmd.Context(), name)
 }
 
-// orCancelled returns err, or errCancelled when the user simply said no.
 func orCancelled(err error) error {
 	if err != nil {
 		return err

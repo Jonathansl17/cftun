@@ -2,7 +2,6 @@ package msg
 
 import "fmt"
 
-// Prompts and confirmations.
 const (
 	PromptFormat              = "%s: "
 	OptionFormat              = "  %d) %s\n"
@@ -28,12 +27,10 @@ const (
 	ConfirmInstallCloudflared = "cloudflared is not installed. Install it now?"
 )
 
-// CurrentValue renders the value kept when the user presses enter.
 func CurrentValue(current string) string {
 	return fmt.Sprintf(" [%s]", current)
 }
 
-// Errors.
 const (
 	ErrorFormat           = "error: %v\n"
 	ErrChoiceRange        = "enter a number between 1 and %d"
@@ -44,7 +41,6 @@ const (
 	ErrCloudflaredMissing = "cloudflared is required, install it with \"cftun install\""
 )
 
-// Progress and results.
 const (
 	InfoAdded            = "Route ready: https://%s -> %s\n"
 	InfoRemoved          = "Route removed: %s\n"
@@ -75,7 +71,6 @@ const (
 	WarnStepFailed       = "warning: %s failed: %v\n"
 )
 
-// Uninstall step names.
 const (
 	StepStopService      = "stop service"
 	StepDeleteDNS        = "delete DNS record"
@@ -85,7 +80,6 @@ const (
 	StepRemoveFiles      = "remove files"
 )
 
-// Tables and health checks.
 const (
 	ListHeader       = "HOSTNAME\tSERVICE\tLOCAL"
 	ListRowFormat    = "%s\t%s\t%s\n"

@@ -1,4 +1,3 @@
-// Package installer installs and removes cloudflared on any Linux distribution.
 package installer
 
 import (
@@ -7,13 +6,10 @@ import (
 	"strings"
 )
 
-// OSReleasePath is the standard distribution identification file.
 const OSReleasePath = "/etc/os-release"
 
-// Family groups distributions that share a package format.
 type Family int
 
-// Supported families. Unknown falls back to the static binary.
 const (
 	FamilyUnknown Family = iota
 	FamilyDebian
@@ -48,7 +44,6 @@ func (f Family) String() string {
 	return familyNames[f]
 }
 
-// DetectFamily reads an os-release file and matches ID, then ID_LIKE.
 func DetectFamily(r io.Reader) (Family, error) {
 	fields, err := parseOSRelease(r)
 	if err != nil {

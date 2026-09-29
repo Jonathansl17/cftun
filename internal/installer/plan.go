@@ -9,12 +9,10 @@ import (
 const (
 	releaseBaseURL = "https://github.com/cloudflare/cloudflared/releases/latest/download/"
 	packageName    = "cloudflared"
-	// BinaryPath is where the static binary is installed when no package fits.
-	BinaryPath = "/usr/local/bin/cloudflared"
-	binaryMode = "0755"
+	BinaryPath     = "/usr/local/bin/cloudflared"
+	binaryMode     = "0755"
 )
 
-// plan describes how one family installs, detects and removes cloudflared.
 type plan struct {
 	assetFormat string
 	archNames   map[string]string
@@ -70,8 +68,6 @@ func planFor(f Family) plan {
 	return binaryPlan
 }
 
-// assetURL returns the release download for this plan, or "" when the plan
-// installs from a distribution repository.
 func (p plan) assetURL(goarch string) (string, error) {
 	if p.assetFormat == "" {
 		return "", nil

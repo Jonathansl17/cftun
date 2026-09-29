@@ -1,4 +1,3 @@
-// Package ingress edits cloudflared config files while preserving unknown keys.
 package ingress
 
 import (
@@ -17,19 +16,15 @@ const (
 	keyService     = "service"
 	yamlIndent     = 2
 
-	// CatchAllService answers requests that match no hostname rule.
 	CatchAllService = "http_status:404"
 )
 
-// ErrMalformed reports a config whose shape cloudflared would not accept.
 var ErrMalformed = errors.New("config must be a mapping with an ingress list")
 
-// Document is a parsed cloudflared config.
 type Document struct {
 	doc *yaml.Node
 }
 
-// Parse reads a cloudflared config.
 func Parse(data []byte) (*Document, error) {
 	var n yaml.Node
 	if err := yaml.Unmarshal(data, &n); err != nil {
@@ -44,7 +39,6 @@ func Parse(data []byte) (*Document, error) {
 	return &Document{doc: &n}, nil
 }
 
-// New builds a config for tunnel with only the catch-all rule.
 func New(tunnel, credentials string) *Document {
 	root := newMapping(keyTunnel, tunnel, keyCredentials, credentials)
 	d := &Document{doc: &yaml.Node{Kind: yaml.DocumentNode, Content: []*yaml.Node{root}}}
@@ -52,7 +46,6 @@ func New(tunnel, credentials string) *Document {
 	return d
 }
 
-// Bytes serializes the document.
 func (d *Document) Bytes() ([]byte, error) {
 	var buf bytes.Buffer
 	enc := yaml.NewEncoder(&buf)
@@ -66,14 +59,8 @@ func (d *Document) Bytes() ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-// Tunnel returns the tunnel name or UUID the config points to.
 func (d *Document) Tunnel() string {
 	return scalarValue(d.root(), keyTunnel)
-}
-
-// Credentials returns the credentials file path.
-func (d *Document) Credentials() string {
-	return scalarValue(d.root(), keyCredentials)
 }
 
 func (d *Document) root() *yaml.Node {

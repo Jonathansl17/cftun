@@ -28,7 +28,6 @@ func newInitCmd(a *App) *cobra.Command {
 	return cmd
 }
 
-// initConfig writes the config, asking before overwriting an existing one.
 func initConfig(ctx context.Context, a *App, tunnel string, force bool) error {
 	if a.Store.Exists() && !force {
 		ok, err := a.Prompt.Confirm(msg.ConfirmOverwrite)

@@ -10,7 +10,6 @@ import (
 
 const binaryName = "cftun"
 
-// NewRoot builds the command tree. The App is created once flags are parsed.
 func NewRoot(version string, in io.Reader, out io.Writer) *cobra.Command {
 	app := &App{}
 	var configFlag string

@@ -72,7 +72,6 @@ func newValidateCmd(a *App) *cobra.Command {
 	}
 }
 
-// checkRule probes the origin and the public hostname of r.
 func checkRule(ctx context.Context, a *App, r ingress.Rule) {
 	a.Printf(msg.CheckTitle, r.Hostname)
 	for _, res := range []health.Result{

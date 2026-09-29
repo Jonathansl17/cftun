@@ -1,4 +1,3 @@
-// Package health probes local origins and public hostnames.
 package health
 
 import (
@@ -19,7 +18,6 @@ const (
 	publicScheme     = "https://"
 )
 
-// Result is the outcome of one probe.
 type Result struct {
 	URL    string
 	Status int
@@ -27,12 +25,10 @@ type Result struct {
 	dns    bool
 }
 
-// OK reports whether the target answered without a server-side failure.
 func (r Result) OK() bool {
 	return r.Err == nil && r.Status < http.StatusInternalServerError
 }
 
-// Hint explains a failed probe using the common errors of the setup guide.
 func (r Result) Hint() string {
 	switch {
 	case r.OK():
@@ -48,17 +44,14 @@ func (r Result) Hint() string {
 	}
 }
 
-// Checker issues probes.
 type Checker struct {
 	HTTP *http.Client
 }
 
-// PublicURL builds the public address of hostname.
 func PublicURL(hostname string) string {
 	return publicScheme + hostname
 }
 
-// Probe performs a GET and classifies the answer.
 func (c Checker) Probe(ctx context.Context, url string) Result {
 	res := Result{URL: url}
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)

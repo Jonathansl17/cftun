@@ -81,7 +81,6 @@ func setToken(a *App, value string) error {
 	return nil
 }
 
-// setToken refreshes the in-memory clients after the token changes.
 func (a *App) setToken(token string) {
 	a.DNS.Token = token
 	a.Routes.DNS = a.DNS

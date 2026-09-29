@@ -13,7 +13,6 @@ import (
 	"github.com/Jonathansl17/cftun/internal/teardown"
 )
 
-// errCancelled reports that the user declined a confirmation.
 var errCancelled = errors.New(msg.ErrCancelled)
 
 func newInstallCmd(a *App) *cobra.Command {
@@ -29,7 +28,6 @@ func newInstallCmd(a *App) *cobra.Command {
 	return cmd
 }
 
-// ensureInstalled installs cloudflared unless it is already present.
 func ensureInstalled(ctx context.Context, a *App, force bool) error {
 	if version, err := a.Tunnels.Version(ctx); err == nil && !force {
 		a.Printf(msg.InfoAlreadyInstalled, version)

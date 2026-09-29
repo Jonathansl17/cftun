@@ -1,4 +1,3 @@
-// Package cli defines the cftun commands.
 package cli
 
 import (
@@ -25,16 +24,13 @@ import (
 )
 
 const (
-	// DefaultConfigPath is where the cloudflared service reads its config.
 	DefaultConfigPath = "/etc/cloudflared/config.yml"
-	// ConfigPathEnv overrides the config path.
-	ConfigPathEnv   = "CFTUN_CONFIG"
-	apiTimeout      = 15 * time.Second
-	probeTimeout    = 5 * time.Second
-	downloadTimeout = 5 * time.Minute
+	ConfigPathEnv     = "CFTUN_CONFIG"
+	apiTimeout        = 15 * time.Second
+	probeTimeout      = 5 * time.Second
+	downloadTimeout   = 5 * time.Minute
 )
 
-// App holds every collaborator the commands use.
 type App struct {
 	Out        io.Writer
 	Home       string
@@ -51,7 +47,6 @@ type App struct {
 	Routes     routes.Manager
 }
 
-// NewApp wires the real implementations for configPath.
 func NewApp(configPath string, in io.Reader, out io.Writer) (*App, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -93,12 +88,10 @@ func (a *App) wire(family installer.Family, token string, in io.Reader) {
 	}
 }
 
-// Printf implements routes.Reporter.
 func (a *App) Printf(format string, args ...any) {
 	fmt.Fprintf(a.Out, format, args...)
 }
 
-// UserCloudflaredDir is the per-user cloudflared directory.
 func (a *App) UserCloudflaredDir() string {
 	return filepath.Join(a.Home, cloudflared.HomeDir)
 }
@@ -120,7 +113,6 @@ func fileExists(path string) bool {
 	return err == nil
 }
 
-// ResolveConfigPath applies flag, then environment, then default.
 func ResolveConfigPath(flag string) string {
 	if flag != "" {
 		return flag

@@ -1,4 +1,3 @@
-// Package service controls the cloudflared system service on any init system.
 package service
 
 import (
@@ -8,10 +7,8 @@ import (
 	"github.com/Jonathansl17/cftun/internal/sysexec"
 )
 
-// Action is one lifecycle operation on the service.
 type Action string
 
-// Supported actions.
 const (
 	Enable  Action = "enable"
 	Disable Action = "disable"
@@ -22,7 +19,6 @@ const (
 	Logs    Action = "logs"
 )
 
-// Actions lists every action in display order.
 var Actions = []Action{Enable, Disable, Start, Stop, Restart, Status, Logs}
 
 const (
@@ -38,14 +34,12 @@ const (
 	journalUnitFlag = "-u"
 )
 
-// Manager runs service actions through the host init system.
 type Manager struct {
 	Name     string
 	Runner   sysexec.Runner
 	commands map[Action][]string
 }
 
-// Run executes action attached to the terminal.
 func (m Manager) Run(ctx context.Context, action Action) error {
 	args, ok := m.commands[action]
 	if !ok {
@@ -54,7 +48,6 @@ func (m Manager) Run(ctx context.Context, action Action) error {
 	return m.Runner.Stream(ctx, sysexec.Command{Name: args[0], Args: args[1:], Privileged: true})
 }
 
-// Detect picks the manager for the running init system.
 func Detect(r sysexec.Runner, exists func(string) bool, lookPath func(string) (string, error)) Manager {
 	if exists(systemdMarker) {
 		return systemd(r)
@@ -99,13 +92,11 @@ func sysV(r sysexec.Runner) Manager {
 	}}
 }
 
-// unitFiles are where `cloudflared service install` registers the service.
 var unitFiles = []string{
 	"/etc/systemd/system/cloudflared.service",
 	"/etc/init.d/cloudflared",
 }
 
-// Installed reports whether the service has been registered.
 func Installed(exists func(string) bool) bool {
 	for _, f := range unitFiles {
 		if exists(f) {

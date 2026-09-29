@@ -17,13 +17,11 @@ const (
 	tokenDirPerm  = 0o700
 )
 
-// TokenStore keeps the API token in the user's config directory.
 type TokenStore struct {
 	Path string
 	Env  func(string) string
 }
 
-// NewTokenStore locates the token file under the user config directory.
 func NewTokenStore() (TokenStore, error) {
 	dir, err := os.UserConfigDir()
 	if err != nil {
@@ -32,7 +30,6 @@ func NewTokenStore() (TokenStore, error) {
 	return TokenStore{Path: filepath.Join(dir, tokenDir, tokenFile), Env: os.Getenv}, nil
 }
 
-// Load returns the token from the environment, then from the file, or "".
 func (s TokenStore) Load() (string, error) {
 	if token := s.Env(TokenEnv); token != "" {
 		return token, nil
@@ -47,7 +44,6 @@ func (s TokenStore) Load() (string, error) {
 	return strings.TrimSpace(string(data)), nil
 }
 
-// Save writes the token readable only by the current user.
 func (s TokenStore) Save(token string) error {
 	if err := os.MkdirAll(filepath.Dir(s.Path), tokenDirPerm); err != nil {
 		return fmt.Errorf("create token dir: %w", err)
@@ -58,7 +54,6 @@ func (s TokenStore) Save(token string) error {
 	return nil
 }
 
-// Clear deletes the token file and its directory when empty.
 func (s TokenStore) Clear() error {
 	if err := os.Remove(s.Path); err != nil && !errors.Is(err, fs.ErrNotExist) {
 		return fmt.Errorf("remove token: %w", err)

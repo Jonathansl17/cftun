@@ -9,19 +9,15 @@ import (
 )
 
 var (
-	// ErrDuplicate reports a hostname that already has a rule.
 	ErrDuplicate = errors.New("hostname already has a rule")
-	// ErrNotFound reports a hostname without a rule.
-	ErrNotFound = errors.New("hostname has no rule")
+	ErrNotFound  = errors.New("hostname has no rule")
 )
 
-// Rule routes one public hostname to one local service.
 type Rule struct {
 	Hostname string
 	Service  string
 }
 
-// Rules returns every hostname rule, excluding the catch-all.
 func (d *Document) Rules() []Rule {
 	var rules []Rule
 	for _, n := range d.list().Content {
@@ -32,16 +28,6 @@ func (d *Document) Rules() []Rule {
 	return rules
 }
 
-// Find returns the rule for host.
-func (d *Document) Find(host string) (Rule, bool) {
-	n := d.node(host)
-	if n == nil {
-		return Rule{}, false
-	}
-	return Rule{Hostname: scalarValue(n, keyHostname), Service: scalarValue(n, keyService)}, true
-}
-
-// Add inserts r just before the catch-all rule.
 func (d *Document) Add(r Rule) error {
 	if d.node(r.Hostname) != nil {
 		return fmt.Errorf("%s: %w", r.Hostname, ErrDuplicate)
@@ -54,7 +40,6 @@ func (d *Document) Add(r Rule) error {
 	return nil
 }
 
-// Remove deletes the rule for host.
 func (d *Document) Remove(host string) error {
 	list := d.list()
 	for i, n := range list.Content {
@@ -66,7 +51,6 @@ func (d *Document) Remove(host string) error {
 	return fmt.Errorf("%s: %w", host, ErrNotFound)
 }
 
-// Update replaces the rule for host with r, keeping any extra keys it has.
 func (d *Document) Update(host string, r Rule) error {
 	n := d.node(host)
 	if n == nil {
@@ -80,7 +64,6 @@ func (d *Document) Update(host string, r Rule) error {
 	return nil
 }
 
-// ensureCatchAll guarantees the list ends with a rule without hostname.
 func (d *Document) ensureCatchAll() {
 	list := d.list()
 	if last := len(list.Content) - 1; last >= 0 && lookup(list.Content[last], keyHostname) == nil {

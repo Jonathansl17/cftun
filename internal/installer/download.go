@@ -10,12 +10,10 @@ import (
 
 const downloadPerm = 0o644
 
-// HTTPDownloader downloads with a plain HTTP client, following redirects.
 type HTTPDownloader struct {
 	Client *http.Client
 }
 
-// Download implements Downloader.
 func (d HTTPDownloader) Download(ctx context.Context, url, dest string) error {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {

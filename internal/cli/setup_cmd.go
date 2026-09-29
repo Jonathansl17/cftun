@@ -22,8 +22,6 @@ func newSetupCmd(a *App) *cobra.Command {
 	}
 }
 
-// runSetup walks through every step of the guide. Each step is skipped when
-// already done, so running it again is safe.
 func runSetup(cmd *cobra.Command, a *App) error {
 	ctx := cmd.Context()
 	hasDomain, err := a.Prompt.Confirm(msg.ConfirmHasDomain)
@@ -63,7 +61,6 @@ func ensureLogin(ctx context.Context, a *App) error {
 	return a.Tunnels.Login(ctx)
 }
 
-// ensureTunnelConfig creates the tunnel when missing and writes the config.
 func ensureTunnelConfig(ctx context.Context, a *App) error {
 	name, err := a.Prompt.Ask(msg.PromptTunnelName, notEmpty)
 	if err != nil {

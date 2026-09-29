@@ -11,14 +11,10 @@ import (
 )
 
 var (
-	// ErrConfigExists protects an existing config from being overwritten.
-	ErrConfigExists = errors.New("config already exists, pass --force to overwrite it")
-	// ErrTunnelNotFound reports a tunnel name or ID that the account lacks.
+	ErrConfigExists   = errors.New("config already exists, pass --force to overwrite it")
 	ErrTunnelNotFound = errors.New("tunnel not found, create it with `cftun tunnels create`")
 )
 
-// Init writes a fresh config pointing at tunnelRef, whose credentials live
-// under home.
 func (m Manager) Init(ctx context.Context, tunnelRef, home string, force bool) error {
 	if m.Store.Exists() && !force {
 		return ErrConfigExists

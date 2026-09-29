@@ -10,7 +10,6 @@ import (
 	"github.com/Jonathansl17/cftun/internal/service"
 )
 
-// Manager applies route changes.
 type Manager struct {
 	ConfigPath string
 	Store      Store
@@ -20,7 +19,6 @@ type Manager struct {
 	Report     Reporter
 }
 
-// List returns the configured hostname rules.
 func (m Manager) List() ([]ingress.Rule, error) {
 	doc, err := m.Store.Load()
 	if err != nil {
@@ -29,7 +27,6 @@ func (m Manager) List() ([]ingress.Rule, error) {
 	return doc.Rules(), nil
 }
 
-// Add publishes rule.
 func (m Manager) Add(ctx context.Context, rule ingress.Rule, opts Options) error {
 	doc, err := m.apply(ctx, func(d *ingress.Document) error { return d.Add(rule) })
 	if err != nil {
@@ -43,7 +40,6 @@ func (m Manager) Add(ctx context.Context, rule ingress.Rule, opts Options) error
 	return m.restart(ctx, opts)
 }
 
-// Remove unpublishes host.
 func (m Manager) Remove(ctx context.Context, host string, opts Options) error {
 	if _, err := m.apply(ctx, func(d *ingress.Document) error { return d.Remove(host) }); err != nil {
 		return err
@@ -56,7 +52,6 @@ func (m Manager) Remove(ctx context.Context, host string, opts Options) error {
 	return m.restart(ctx, opts)
 }
 
-// Edit replaces the rule of host with rule, moving DNS when the name changes.
 func (m Manager) Edit(ctx context.Context, host string, rule ingress.Rule, opts Options) error {
 	doc, err := m.apply(ctx, func(d *ingress.Document) error { return d.Update(host, rule) })
 	if err != nil {
@@ -73,8 +68,6 @@ func (m Manager) Edit(ctx context.Context, host string, rule ingress.Rule, opts 
 	return m.restart(ctx, opts)
 }
 
-// DeleteDNS removes the CNAME of host, or tells the user to do it by hand
-// when no API token is configured.
 func (m Manager) DeleteDNS(ctx context.Context, host string) error {
 	if !m.DNS.Configured() {
 		m.Report.Printf(msg.WarnManualDNS, host)
@@ -88,7 +81,6 @@ func (m Manager) DeleteDNS(ctx context.Context, host string) error {
 	return nil
 }
 
-// Validate runs cloudflared's ingress validation on the config.
 func (m Manager) Validate(ctx context.Context) error {
 	out, err := m.Tunnels.ValidateIngress(ctx, m.ConfigPath)
 	if err != nil {
@@ -98,7 +90,6 @@ func (m Manager) Validate(ctx context.Context) error {
 	return nil
 }
 
-// apply mutates and saves the config, rolling back if validation fails.
 func (m Manager) apply(ctx context.Context, mutate func(*ingress.Document) error) (*ingress.Document, error) {
 	doc, err := m.Store.Load()
 	if err != nil {

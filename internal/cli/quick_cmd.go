@@ -31,8 +31,6 @@ func newQuickTunnelCmd(a *App) *cobra.Command {
 	return cmd
 }
 
-// runQuickTunnel exposes a local port on a random trycloudflare.com URL
-// until the user presses the interrupt key.
 func runQuickTunnel(ctx context.Context, a *App, port string) error {
 	p, err := askPort(a, port, msg.PromptPort)
 	if err != nil {

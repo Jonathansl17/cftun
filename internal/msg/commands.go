@@ -1,7 +1,5 @@
-// Package msg holds every user-facing string of cftun.
 package msg
 
-// Command descriptions.
 const (
 	RootShort = "Manage a Cloudflare Tunnel and its public hostnames"
 	RootLong  = `cftun installs cloudflared, creates a tunnel, publishes local ports on
@@ -59,7 +57,6 @@ anything permanent.`
 	ServiceInstallShort = "Register, enable and start the service"
 )
 
-// ServiceActionShort describes each service lifecycle action.
 var ServiceActionShort = map[string]string{
 	"enable":  "Start the service on boot",
 	"disable": "Do not start the service on boot",
@@ -70,7 +67,6 @@ var ServiceActionShort = map[string]string{
 	"logs":    "Follow the service logs (Ctrl+C to stop)",
 }
 
-// Flag descriptions.
 const (
 	FlagConfig       = "cloudflared config file (default /etc/cloudflared/config.yml, env CFTUN_CONFIG)"
 	FlagHost         = "public hostname, e.g. api.example.com"

@@ -10,7 +10,6 @@ import (
 	"github.com/Jonathansl17/cftun/internal/routes"
 )
 
-// bindRouteOptions registers the flags shared by add, rm and edit.
 func bindRouteOptions(cmd *cobra.Command, opts *routes.Options) {
 	cmd.Flags().BoolVar(&opts.SkipDNS, "no-dns", false, msg.FlagNoDNS)
 	cmd.Flags().BoolVar(&opts.SkipRestart, "no-restart", false, msg.FlagNoRestart)
@@ -58,7 +57,6 @@ func newRemoveCmd(a *App) *cobra.Command {
 	return cmd
 }
 
-// addRoute asks for any missing value and publishes the route.
 func addRoute(ctx context.Context, a *App, host, port string, opts routes.Options) error {
 	hostname, err := askHostname(a, host, msg.PromptHostname)
 	if err != nil {

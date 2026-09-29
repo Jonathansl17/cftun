@@ -30,8 +30,6 @@ func newServiceCmd(a *App) *cobra.Command {
 	return cmd
 }
 
-// installService registers, enables and starts the service. It is a no-op
-// registration when the service already exists.
 func installService(cmd *cobra.Command, a *App) error {
 	if !a.Store.Exists() {
 		return errConfigMissing(a)

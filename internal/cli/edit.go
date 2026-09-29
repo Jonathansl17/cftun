@@ -40,8 +40,6 @@ func newEditCmd(a *App) *cobra.Command {
 	return cmd
 }
 
-// askEdit fills the new hostname and port. Interactively, pressing enter
-// keeps the current value.
 func askEdit(a *App, rule ingress.Rule, newHost, port string) (ingress.Rule, error) {
 	if newHost == "" && port == "" {
 		var err error
@@ -77,7 +75,6 @@ func askEditInteractive(a *App, rule ingress.Rule) (string, string, error) {
 	return host, port, err
 }
 
-// keepIfBlank asks with the current value shown; a blank answer keeps it.
 func keepIfBlank(a *App, label, current string) (string, error) {
 	answer, err := a.Prompt.Ask(label+msg.CurrentValue(current), func(string) error { return nil })
 	if err != nil {

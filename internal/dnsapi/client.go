@@ -1,5 +1,3 @@
-// Package dnsapi deletes tunnel DNS records through the Cloudflare API, which
-// the cloudflared CLI cannot do on its own.
 package dnsapi
 
 import (
@@ -13,18 +11,14 @@ import (
 )
 
 const (
-	// DefaultBaseURL is the Cloudflare API v4 endpoint.
 	DefaultBaseURL = "https://api.cloudflare.com/client/v4"
-	// TokenEnv names the variable holding an API token with DNS:Edit.
-	TokenEnv      = "CLOUDFLARE_API_TOKEN"
-	recordType    = "CNAME"
-	minZoneLabels = 2
+	TokenEnv       = "CLOUDFLARE_API_TOKEN"
+	recordType     = "CNAME"
+	minZoneLabels  = 2
 )
 
-// ErrZoneNotFound reports that no zone in the account contains the hostname.
 var ErrZoneNotFound = errors.New("no Cloudflare zone found for hostname")
 
-// Client talks to the Cloudflare API.
 type Client struct {
 	HTTP    *http.Client
 	BaseURL string
@@ -39,12 +33,10 @@ type envelope struct {
 	} `json:"result"`
 }
 
-// Configured reports whether a token is available.
 func (c Client) Configured() bool {
 	return c.Token != ""
 }
 
-// DeleteCNAME removes the CNAME records of hostname and returns how many.
 func (c Client) DeleteCNAME(ctx context.Context, hostname string) (int, error) {
 	zone, err := c.zoneID(ctx, hostname)
 	if err != nil {
@@ -63,7 +55,6 @@ func (c Client) DeleteCNAME(ctx context.Context, hostname string) (int, error) {
 	return len(records), nil
 }
 
-// zoneID walks up the hostname labels until a zone matches.
 func (c Client) zoneID(ctx context.Context, hostname string) (string, error) {
 	labels := strings.Split(hostname, ".")
 	for i := 0; i <= len(labels)-minZoneLabels; i++ {

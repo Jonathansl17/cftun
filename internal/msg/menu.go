@@ -1,6 +1,5 @@
 package msg
 
-// Interactive menu labels.
 const (
 	MenuTitle = "\ncftun - what do you want to do?"
 	MenuExit  = "Exit"
@@ -42,7 +41,6 @@ const (
 	MenuTokenClear  = "Clear API token"
 )
 
-// Setup wizard steps.
 const (
 	SetupStepFormat  = "\n==> [%d/%d] %s\n"
 	SetupStepInstall = "Install cloudflared"
