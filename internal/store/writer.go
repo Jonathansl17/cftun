@@ -47,8 +47,8 @@ func (w ElevatedWriter) writeElevated(ctx context.Context, path string, data []b
 		}
 	}()
 	if _, err := tmp.Write(data); err != nil {
-		tmp.Close()
-		return fmt.Errorf(writeTempFormat, err)
+		closeErr := tmp.Close()
+		return fmt.Errorf(writeTempFormat, errors.Join(err, closeErr))
 	}
 	if err := tmp.Close(); err != nil {
 		return fmt.Errorf(closeTempFormat, err)

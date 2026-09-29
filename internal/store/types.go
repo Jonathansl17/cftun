@@ -15,8 +15,14 @@ type Writer interface {
 	RemoveFile(ctx context.Context, path string) error
 }
 
+type Reader interface {
+	ReadFile(path string) ([]byte, error)
+	Exists(path string) bool
+}
+
 type File struct {
 	Locator Locator
+	Reader  Reader
 	Writer  Writer
 }
 

@@ -6,7 +6,6 @@ const (
 	fileModeFormat  = "%04o"
 	tempFilePattern = "cftun-*"
 
-	readFileFormat   = "read %s: %w"
 	readBackupFormat = "read backup: %w"
 	writeFileFormat  = "write %s: %w"
 	removeFileFormat = "remove %s: %w"

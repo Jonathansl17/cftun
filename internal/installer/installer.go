@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"os"
 	"path/filepath"
 )
 
@@ -33,13 +32,13 @@ func (i Installer) downloadAndInstall(ctx context.Context, p plan, name string) 
 	if err != nil {
 		return err
 	}
-	dir, err := os.MkdirTemp("", downloadDirPattern)
+	dir, err := i.TempDirs.MakeTempDir(downloadDirPattern)
 	if err != nil {
-		return fmt.Errorf(createDirFormat, err)
+		return err
 	}
 	defer func() {
-		if removeErr := os.RemoveAll(dir); removeErr != nil {
-			err = errors.Join(err, fmt.Errorf(removeDirFormat, removeErr))
+		if removeErr := i.TempDirs.RemoveAll(dir); removeErr != nil {
+			err = errors.Join(err, removeErr)
 		}
 	}()
 	file := filepath.Join(dir, asset.Name)

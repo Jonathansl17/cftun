@@ -5,10 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
-	"os"
 
 	"github.com/Jonathansl17/cftun/internal/apperr"
-	"github.com/Jonathansl17/cftun/internal/hostfs"
 	"github.com/Jonathansl17/cftun/internal/ingress"
 )
 
@@ -21,16 +19,16 @@ func (f File) BackupPath() string {
 }
 
 func (f File) Exists() bool {
-	return hostfs.FS{}.Exists(f.Path())
+	return f.Reader.Exists(f.Path())
 }
 
 func (f File) Load() (*ingress.Document, error) {
-	data, err := os.ReadFile(f.Path())
+	data, err := f.Reader.ReadFile(f.Path())
 	if errors.Is(err, fs.ErrNotExist) {
 		return nil, apperr.Wrap(f.Path(), ErrMissing)
 	}
 	if err != nil {
-		return nil, fmt.Errorf(readFileFormat, f.Path(), err)
+		return nil, err
 	}
 	return ingress.Parse(data)
 }
@@ -47,7 +45,7 @@ func (f File) Save(ctx context.Context, doc *ingress.Document) error {
 }
 
 func (f File) Restore(ctx context.Context) error {
-	data, err := os.ReadFile(f.BackupPath())
+	data, err := f.Reader.ReadFile(f.BackupPath())
 	if err != nil {
 		return fmt.Errorf(readBackupFormat, err)
 	}
@@ -59,12 +57,12 @@ func (f File) Delete(ctx context.Context) error {
 }
 
 func (f File) backup(ctx context.Context) error {
-	data, err := os.ReadFile(f.Path())
+	data, err := f.Reader.ReadFile(f.Path())
 	if errors.Is(err, fs.ErrNotExist) {
 		return nil
 	}
 	if err != nil {
-		return fmt.Errorf(readFileFormat, f.Path(), err)
+		return err
 	}
 	return f.Writer.WriteFile(ctx, f.BackupPath(), data)
 }

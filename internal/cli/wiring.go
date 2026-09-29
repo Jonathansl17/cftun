@@ -33,25 +33,26 @@ func newInfra(streams Streams, locator *configLocator) (infra, error) {
 		session: uikit.Session{Out: streams.Out, Prompt: console},
 		files:   files,
 		runner:  runner,
-		store:   store.File{Locator: locator, Writer: store.ElevatedWriter{Runner: runner}},
+		store:   store.File{Locator: locator, Reader: files, Writer: store.ElevatedWriter{Runner: runner}},
 		tunnels: cloudflared.Client{Runner: runner},
 		svc:     service.Detect(runner, files.Exists, exec.LookPath),
 		tokens:  tokens,
 		health:  health.Checker{HTTP: &http.Client{Timeout: probeTimeout}},
 	}
-	in.installer = newInstaller(runner)
+	in.installer = newInstaller(runner, files)
 	in.dns = dnsapi.Client{HTTP: &http.Client{Timeout: apiTimeout}, BaseURL: dnsapi.DefaultBaseURL, Tokens: tokens}
 	in.quick = quicktunnel.Runner{Tunnels: in.tunnels, Files: files}
 	in.wireRoutes()
 	return in, nil
 }
 
-func newInstaller(runner sysexec.Runner) installer.Installer {
+func newInstaller(runner sysexec.Runner, dirs installer.TempDirs) installer.Installer {
 	return installer.Installer{
 		Runner:     runner,
 		Downloader: installer.HTTPDownloader{Client: &http.Client{Timeout: downloadTimeout}},
 		Releases:   installer.GitHubReleases{Client: &http.Client{Timeout: apiTimeout}},
 		Families:   installer.OSReleaseSource{},
+		TempDirs:   dirs,
 		GoArch:     runtime.GOARCH,
 	}
 }

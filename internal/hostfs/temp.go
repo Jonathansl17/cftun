@@ -19,6 +19,21 @@ func (FS) EmptyTemp(pattern string) (Temp, error) {
 	return Temp{Path: file.Name()}, nil
 }
 
+func (FS) MakeTempDir(pattern string) (string, error) {
+	dir, err := os.MkdirTemp("", pattern)
+	if err != nil {
+		return "", fmt.Errorf(createDirFormat, err)
+	}
+	return dir, nil
+}
+
+func (FS) RemoveAll(path string) error {
+	if err := os.RemoveAll(path); err != nil {
+		return fmt.Errorf(removeDirFormat, err)
+	}
+	return nil
+}
+
 func (t Temp) Remove() error {
 	if err := os.Remove(t.Path); err != nil {
 		return fmt.Errorf(removeTempFormat, err)

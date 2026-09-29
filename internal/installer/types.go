@@ -21,11 +21,17 @@ type FamilySource interface {
 	Family() (Family, error)
 }
 
+type TempDirs interface {
+	MakeTempDir(pattern string) (string, error)
+	RemoveAll(path string) error
+}
+
 type Installer struct {
 	Runner     sysexec.Runner
 	Downloader Downloader
 	Releases   ReleaseSource
 	Families   FamilySource
+	TempDirs   TempDirs
 	GoArch     string
 }
 

@@ -9,7 +9,7 @@ import (
 
 func (FS) Exists(path string) bool {
 	_, err := os.Stat(path)
-	return err == nil
+	return !errors.Is(err, fs.ErrNotExist)
 }
 
 func (FS) KindOf(path string) (Kind, error) {
