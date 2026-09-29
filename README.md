@@ -36,6 +36,11 @@ downloads the matching binary from the
 SHA-256 checksum and installs it to `/usr/local/bin/cftun` (using sudo when
 needed). It needs `curl` or `wget` and nothing else: no Go, no runtime.
 
+It also installs tab completion for every shell present: bash
+(`/usr/share/bash-completion/completions/cftun`, needs the `bash-completion`
+package), zsh and fish. Open a new terminal after installing. For another
+location, generate the script yourself with `cftun completion bash|zsh|fish`.
+
 | Variable | Default | Purpose |
 |---|---|---|
 | `CFTUN_VERSION` | `latest` | Release tag to install |
@@ -100,6 +105,7 @@ the subcommands below.
 |---|---|
 | `cftun` | Interactive menu |
 | `cftun setup` | Guided setup from zero to a working tunnel |
+| `cftun tunnel [--port P]` | Temporary public URL for a local port, no domain needed |
 | `cftun add [--host H] [--port P]` | Add a route, create its DNS record, restart the service |
 | `cftun rm [--host H]` | Remove a route and its DNS record, restart the service |
 | `cftun edit [--host H] [--new-host N] [--port P]` | Change a route's hostname or port |
@@ -108,7 +114,7 @@ the subcommands below.
 | `cftun validate` | Validate the ingress rules with cloudflared |
 | `cftun install [--force]` | Install cloudflared |
 | `cftun login` | Authorize cloudflared with your account |
-| `cftun tunnel create\|list\|delete` | Manage tunnels |
+| `cftun tunnels create\|list\|delete` | Manage named tunnels |
 | `cftun init [--tunnel T] [--force]` | Write the config for an existing tunnel |
 | `cftun service install` | Register, enable and start the service |
 | `cftun service start\|stop\|restart\|status\|enable\|disable\|logs` | Control the service |
@@ -122,6 +128,32 @@ hostname and the port. `add`, `rm` and `edit` accept `--no-dns` and
 Every change backs up the config to `config.yml.bak` and runs
 `cloudflared tunnel ingress validate`. If validation fails, the backup is
 restored. The catch-all `http_status:404` rule always stays last.
+
+Commands that need cloudflared (`login`, `tunnels`, `init`, `add`, `rm`,
+`edit`, `validate`, `service install`) offer to install it when it is missing.
+
+## Temporary tunnel (no domain)
+
+Without a domain on Cloudflare you can still expose a local port:
+
+```sh
+cftun tunnel --port 3000
+```
+
+It installs cloudflared if needed and prints a random
+`https://<name>.trycloudflare.com` URL that forwards to
+`http://localhost:3000`, with no account or login. Stop it with your
+interrupt key (Ctrl+C). `cftun setup` offers this automatically when you
+answer that you have no domain.
+
+Limitations of Cloudflare Quick Tunnels:
+
+- The URL is random and changes on every run.
+- It lives only while the command runs; it is not a system service.
+- One port per run; open another terminal for another port.
+- No uptime guarantee, about 200 concurrent requests, no Server-Sent Events.
+
+For a fixed hostname, add a domain to Cloudflare and run `cftun setup`.
 
 ## API token
 
@@ -176,7 +208,8 @@ Either way, it stops and unregisters the service, deletes the DNS record of
 every route (with an API token), deletes the tunnel, removes the package and
 deletes `/etc/cloudflared`, `~/.cloudflared`, the logs and the saved token. If
 a step fails, it keeps going and reports every failure at the end; the cftun
-binary is only removed once the cleanup succeeded, so you can re-run it.
+binary and its completion files are only removed once the cleanup
+succeeded, so you can re-run it.
 
 ## Troubleshooting
 

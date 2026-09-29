@@ -12,6 +12,11 @@ readonly INSTALL_DIR="${CFTUN_INSTALL_DIR:-/usr/local/bin}"
 readonly ASSUME_YES="${CFTUN_YES:-0}"
 readonly KEEP_CLOUDFLARED="${CFTUN_KEEP_CLOUDFLARED:-0}"
 readonly TTY="/dev/tty"
+readonly COMPLETION_FILES=(
+  "/usr/share/bash-completion/completions/${BIN_NAME}"
+  "/usr/share/zsh/site-functions/_${BIN_NAME}"
+  "/usr/share/fish/vendor_completions.d/${BIN_NAME}.fish"
+)
 
 die() {
   printf 'error: %s\n' "$1" >&2
@@ -46,6 +51,19 @@ remove_binary() {
   printf 'Removed %s\n' "$bin"
 }
 
+remove_completions() {
+  local file
+  for file in "${COMPLETION_FILES[@]}"; do
+    [[ -e "$file" ]] || continue
+    if [[ -w "$(dirname "$file")" ]]; then
+      rm -f -- "$file"
+    else
+      sudo rm -f -- "$file"
+    fi
+    printf 'Removed %s\n' "$file"
+  done
+}
+
 main() {
   local bin
   bin="$(find_binary)"
@@ -54,6 +72,7 @@ main() {
     run_teardown "$bin"
   fi
   remove_binary "$bin"
+  remove_completions
   printf '%s has been uninstalled.\n' "$BIN_NAME"
 }
 

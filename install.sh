@@ -11,6 +11,11 @@ readonly BIN_NAME="cftun"
 readonly CHECKSUMS="checksums.txt"
 readonly VERSION="${CFTUN_VERSION:-latest}"
 readonly INSTALL_DIR="${CFTUN_INSTALL_DIR:-/usr/local/bin}"
+readonly COMPLETIONS=(
+  "bash:/usr/share/bash-completion/completions/${BIN_NAME}"
+  "zsh:/usr/share/zsh/site-functions/_${BIN_NAME}"
+  "fish:/usr/share/fish/vendor_completions.d/${BIN_NAME}.fish"
+)
 # Global so the EXIT trap can still see it after main returns.
 TMP_DIR=""
 
@@ -68,6 +73,23 @@ install_binary() {
   echo "$dest"
 }
 
+install_completions() {
+  local bin="$1" entry shell file generated
+  for entry in "${COMPLETIONS[@]}"; do
+    shell="${entry%%:*}"
+    file="${entry#*:}"
+    command -v "$shell" >/dev/null 2>&1 || continue
+    generated="${TMP_DIR}/completion.${shell}"
+    "$bin" completion "$shell" >"$generated"
+    if [[ -w "$(dirname "$file")" ]]; then
+      install -m 0644 "$generated" "$file"
+    else
+      sudo install -D -m 0644 "$generated" "$file"
+    fi
+    printf 'Installed %s completion: %s\n' "$shell" "$file"
+  done
+}
+
 main() {
   [[ "$(uname -s)" == "Linux" ]] || die "cftun only supports Linux"
   local arch asset base dest
@@ -84,6 +106,8 @@ main() {
 
   dest="$(install_binary "${TMP_DIR}/${asset}")"
   printf 'Installed %s\n' "$("$dest" --version)"
+  install_completions "$dest"
+  printf 'Open a new terminal to get tab completion.\n'
   printf 'Next step: run "%s setup"\n' "$BIN_NAME"
 }
 
