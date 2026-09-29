@@ -11,11 +11,12 @@ import (
 )
 
 func (g *Group) checkCmd() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   useCheck,
 		Short: msg.CheckShort,
 		RunE:  g.check,
 	}
+	return mark(cmd, msg.MenuCheck, orderCheck)
 }
 
 func (g *Group) check(cmd *cobra.Command, _ []string) error {

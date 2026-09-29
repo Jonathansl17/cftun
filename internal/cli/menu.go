@@ -9,50 +9,51 @@ import (
 	"github.com/Jonathansl17/cftun/internal/prompt"
 )
 
-func runMenu(a *App, root *cobra.Command) error {
-	return browse(a, root, menuScreen{title: msg.MenuTitle, entries: mainMenu, leave: msg.MenuExit})
+func (m menu) run(root *cobra.Command) error {
+	nodes, err := buildMenu(root)
+	if err != nil {
+		return err
+	}
+	return m.browse(root, menuScreen{title: msg.MenuTitle, nodes: nodes, leave: msg.MenuExit})
 }
 
-func browse(a *App, root *cobra.Command, screen menuScreen) error {
+func (m menu) browse(root *cobra.Command, screen menuScreen) error {
+	choices := make([]string, 0, len(screen.nodes)+1)
+	for _, node := range screen.nodes {
+		choices = append(choices, node.label)
+	}
+	choices = append(choices, screen.leave)
 	for {
-		labels := make([]string, 0, len(screen.entries)+1)
-		for _, e := range screen.entries {
-			labels = append(labels, e.label)
-		}
-		i, err := a.Prompt.Select(screen.title, append(labels, screen.leave))
-		if errors.Is(err, prompt.ErrAborted) || (err == nil && i == len(screen.entries)) {
+		i, err := m.session.Prompt.Select(screen.title, choices)
+		if errors.Is(err, prompt.ErrAborted) || (err == nil && i == len(screen.nodes)) {
 			return nil
 		}
 		if err != nil {
 			return err
 		}
-		if err := dispatch(a, root, screen.entries[i]); err != nil {
+		if err := m.dispatch(root, screen.nodes[i]); err != nil {
 			return err
 		}
-		if a.CftunRemoved {
+		if m.finished() {
 			return nil
 		}
 	}
 }
 
-func dispatch(a *App, root *cobra.Command, e entry) error {
-	if e.children != nil {
-		return browse(a, root, menuScreen{title: e.label, entries: e.children, leave: msg.MenuBack})
+func (m menu) dispatch(root *cobra.Command, node menuNode) error {
+	if node.cmd == nil {
+		return m.browse(root, menuScreen{title: node.label, nodes: node.children, leave: msg.MenuBack})
 	}
-	cmd, _, err := root.Find(e.path)
-	if err != nil {
-		return err
-	}
-	cmd.SetContext(root.Context())
-	err = a.Gate.Require(cmd)
+	node.cmd.SetContext(root.Context())
+	err := m.gate.Require(node.cmd)
 	if err == nil {
-		err = cmd.RunE(cmd, nil)
+		err = node.cmd.RunE(node.cmd, nil)
 	}
 	if err != nil {
 		if errors.Is(err, prompt.ErrAborted) {
 			return err
 		}
-		a.PrintError(err)
+		m.session.PrintError(err)
 	}
 	return nil
 }

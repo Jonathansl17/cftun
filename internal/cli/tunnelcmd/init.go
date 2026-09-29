@@ -25,7 +25,7 @@ func (g *Group) initCmd() *cobra.Command {
 	}
 	cmd.Flags().StringVar(&tunnel, flagTunnel, noDefault, msg.FlagTunnel)
 	cmd.Flags().BoolVar(&force, flagForce, false, msg.FlagForceInit)
-	return uikit.RequireCloudflared(cmd)
+	return mark(uikit.RequireCloudflared(cmd), msg.MenuInit, orderInit)
 }
 
 func (g *Group) initConfig(ctx context.Context, tunnel string, force bool) error {

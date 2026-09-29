@@ -12,4 +12,9 @@ const (
 
 	maxNameArgs = 1
 	noDefault   = ""
+
+	orderList   = 1
+	orderCreate = 2
+	orderDelete = 3
+	orderInit   = 4
 )

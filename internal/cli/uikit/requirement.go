@@ -3,10 +3,7 @@ package uikit
 import "github.com/spf13/cobra"
 
 func RequireCloudflared(cmd *cobra.Command) *cobra.Command {
-	if cmd.Annotations == nil {
-		cmd.Annotations = map[string]string{}
-	}
-	cmd.Annotations[annotationNeedsCloudflared] = annotationEnabled
+	setAnnotation(cmd, annotationNeedsCloudflared, annotationEnabled)
 	return cmd
 }
 

@@ -25,7 +25,7 @@ set. If any step fails, cftun is kept so the command can be run again.`
 
 	LoginShort       = "Authorize cloudflared with your Cloudflare account"
 	TokenShort       = "Manage the API token used to delete DNS records"
-	TokenSetShort    = "Save an API token"
+	TokenSetShort    = "Save an API token (asked at a prompt, or read from CLOUDFLARE_API_TOKEN)"
 	TokenClearShort  = "Forget the saved API token"
 	TokenStatusShort = "Show whether an API token is configured"
 	TokenLong        = `cloudflared can create DNS records but not delete them. To let cftun

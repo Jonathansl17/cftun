@@ -166,7 +166,10 @@ For a fixed hostname, add a domain to Cloudflare and run `cftun setup`.
 
 1. Open <https://dash.cloudflare.com/profile/api-tokens>.
 2. Create a token from the **Edit zone DNS** template for your zone.
-3. Run `cftun token set` and paste it.
+3. Run `cftun token set` and paste it at the prompt, or export
+   `CLOUDFLARE_API_TOKEN` and run `cftun token set` to save it. The token is
+   never taken as a command-line argument, so it stays out of your shell
+   history and the process list.
 
 The token is stored in `~/.config/cftun/token` with mode `0600`. The
 `CLOUDFLARE_API_TOKEN` environment variable takes precedence. Without a
@@ -181,6 +184,10 @@ token, cftun tells you which record to delete in the dashboard.
 | openSUSE, SLES | `.rpm` from the cloudflared releases |
 | Arch, Manjaro, EndeavourOS | `pacman` |
 | Alpine and anything else | static binary in `/usr/local/bin` |
+
+cloudflared downloads for the `.deb`, `.rpm` and static-binary methods are
+verified against the SHA-256 digest published with the release; the install
+fails if the digest is missing or does not match.
 
 CPU architectures: amd64, arm64, arm and 386. Services work with systemd,
 OpenRC and SysV init.

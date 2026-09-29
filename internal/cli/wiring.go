@@ -5,6 +5,7 @@ import (
 	"os/exec"
 	"runtime"
 
+	"github.com/Jonathansl17/cftun/internal/cli/installcmd"
 	"github.com/Jonathansl17/cftun/internal/cli/uikit"
 	"github.com/Jonathansl17/cftun/internal/cloudflared"
 	"github.com/Jonathansl17/cftun/internal/dnsapi"
@@ -66,6 +67,6 @@ func (in *infra) wireRoutes() {
 		Config: in.store, Tunnels: in.tunnels, Service: in.svc, Package: in.installer, DNS: dns,
 		Files:    teardown.SafeRemover{Runner: in.runner, Inspector: in.files},
 		Temp:     in.files,
-		Observer: teardownPrinter{Report: in.session},
+		Observer: installcmd.Observer{Session: in.session},
 	}
 }

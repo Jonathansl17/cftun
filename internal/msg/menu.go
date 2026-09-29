@@ -1,5 +1,7 @@
 package msg
 
+import "github.com/Jonathansl17/cftun/internal/service"
+
 const (
 	MenuTitle = "\ncftun - what do you want to do?"
 	MenuExit  = "Exit"
@@ -21,13 +23,6 @@ const (
 	MenuValidate = "Validate config"
 
 	MenuServiceInstall = "Install and start service"
-	MenuServiceStatus  = "Status"
-	MenuServiceRestart = "Restart"
-	MenuServiceStart   = "Start"
-	MenuServiceStop    = "Stop"
-	MenuServiceEnable  = "Enable on boot"
-	MenuServiceDisable = "Disable on boot"
-	MenuServiceLogs    = "Follow logs"
 
 	MenuTunnelList   = "List tunnels"
 	MenuTunnelCreate = "Create tunnel"
@@ -40,6 +35,16 @@ const (
 	MenuTokenStatus = "API token status"
 	MenuTokenClear  = "Clear API token"
 )
+
+var MenuServiceLabel = map[service.Action]string{
+	service.Status:  "Status",
+	service.Restart: "Restart",
+	service.Start:   "Start",
+	service.Stop:    "Stop",
+	service.Enable:  "Enable on boot",
+	service.Disable: "Disable on boot",
+	service.Logs:    "Follow logs",
+}
 
 const (
 	SetupStepFormat  = "\n==> [%d/%d] %s\n"

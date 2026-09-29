@@ -16,11 +16,12 @@ func (g *Group) actionCmds() []*cobra.Command {
 }
 
 func (g *Group) actionCmd(action service.Action) *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   string(action),
 		Short: msg.ServiceActionShort[action],
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			return g.deps.Actions.Run(cmd.Context(), action)
 		},
 	}
+	return mark(cmd, msg.MenuServiceLabel[action], actionOrder[action])
 }

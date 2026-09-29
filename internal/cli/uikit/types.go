@@ -17,3 +17,19 @@ type DisplayError struct {
 	Text  string
 	Cause error
 }
+
+type MenuGroup string
+
+const (
+	GroupNone    MenuGroup = ""
+	GroupRoutes  MenuGroup = "routes"
+	GroupService MenuGroup = "service"
+	GroupTunnels MenuGroup = "tunnels"
+	GroupAccount MenuGroup = "account"
+)
+
+type MenuSlot struct {
+	Group MenuGroup
+	Label string
+	Order int
+}

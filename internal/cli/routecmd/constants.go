@@ -21,6 +21,13 @@ const (
 
 	noDefault = ""
 	noLabel   = ""
+
+	orderList     = 1
+	orderAdd      = 2
+	orderEdit     = 3
+	orderRemove   = 4
+	orderCheck    = 5
+	orderValidate = 6
 )
 
 var (

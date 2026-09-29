@@ -13,7 +13,8 @@ func NewRoot(version string, streams Streams) (*cobra.Command, error) {
 		return nil, err
 	}
 	g := newGroups(in)
-	app := newApp(in, g)
+	gate := Gate{Session: in.session, Tunnels: in.tunnels, Install: g.ensureCloudflared}
+	m := menu{session: in.session, gate: gate, finished: g.install.SelfRemoved}
 	root := &cobra.Command{
 		Use:           binaryName,
 		Version:       version,
@@ -22,13 +23,12 @@ func NewRoot(version string, streams Streams) (*cobra.Command, error) {
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
-			return app.Gate.Require(cmd)
+			return gate.Require(cmd)
 		},
-		RunE: func(cmd *cobra.Command, _ []string) error { return runMenu(app, cmd.Root()) },
+		RunE: func(cmd *cobra.Command, _ []string) error { return m.run(cmd.Root()) },
 	}
 	root.PersistentFlags().StringVar(&locator.Flag, flagConfig, noDefault, msg.FlagConfig)
 	root.SetOut(streams.Out)
-	root.AddCommand(app.commands()...)
 	root.AddCommand(g.commands()...)
 	return root, nil
 }

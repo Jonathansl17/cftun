@@ -11,12 +11,13 @@ import (
 )
 
 func (g *Group) deleteCmd() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   useDelete,
 		Short: msg.TunnelDeleteShort,
 		Args:  cobra.MaximumNArgs(maxNameArgs),
 		RunE:  g.delete,
 	}
+	return mark(cmd, msg.MenuTunnelDelete, orderDelete)
 }
 
 func (g *Group) delete(cmd *cobra.Command, args []string) error {

@@ -10,6 +10,19 @@ import (
 const (
 	annotationNeedsCloudflared = "cftun/needs-cloudflared"
 	annotationEnabled          = "true"
+	annotationMenuGroup        = "cftun/menu-group"
+	annotationMenuLabel        = "cftun/menu-label"
+	annotationMenuOrder        = "cftun/menu-order"
+
+	OrderSetup     = 10
+	OrderQuick     = 20
+	OrderRoutes    = 30
+	OrderService   = 40
+	OrderTunnels   = 50
+	OrderAccount   = 60
+	OrderUninstall = 70
+
+	slotErrorFormat = "menu slot of %s: %w"
 
 	tableMinWidth = 0
 	tableTabWidth = 4

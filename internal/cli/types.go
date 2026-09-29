@@ -4,8 +4,14 @@ import (
 	"context"
 	"io"
 
+	"github.com/spf13/cobra"
+
+	"github.com/Jonathansl17/cftun/internal/cli/authcmd"
+	"github.com/Jonathansl17/cftun/internal/cli/installcmd"
+	"github.com/Jonathansl17/cftun/internal/cli/quickcmd"
 	"github.com/Jonathansl17/cftun/internal/cli/routecmd"
 	"github.com/Jonathansl17/cftun/internal/cli/servicecmd"
+	"github.com/Jonathansl17/cftun/internal/cli/setupcmd"
 	"github.com/Jonathansl17/cftun/internal/cli/tunnelcmd"
 	"github.com/Jonathansl17/cftun/internal/cli/uikit"
 	"github.com/Jonathansl17/cftun/internal/cloudflared"
@@ -51,9 +57,17 @@ type infra struct {
 }
 
 type groups struct {
-	routes  *routecmd.Group
+	setup   *setupcmd.Group
+	install *installcmd.Group
+	auth    *authcmd.Group
+	quick   *quickcmd.Group
 	tunnels *tunnelcmd.Group
+	routes  *routecmd.Group
 	service *servicecmd.Group
+}
+
+type commandProvider interface {
+	Commands() []*cobra.Command
 }
 
 type VersionSource interface {
@@ -66,37 +80,27 @@ type Gate struct {
 	Install func(ctx context.Context) error
 }
 
-type App struct {
-	uikit.Session
-	Gate         Gate
-	Files        hostfs.FS
-	Store        store.File
-	Tunnels      cloudflared.Client
-	Installer    installer.Installer
-	Tokens       dnsapi.TokenStore
-	DNS          dnsapi.Client
-	Teardown     teardown.Procedure
-	Quick        quicktunnel.Runner
-	Groups       groups
-	CftunRemoved bool
+type menu struct {
+	session  uikit.Session
+	gate     Gate
+	finished func() bool
 }
 
-type Reporter interface {
-	Printf(format string, args ...any)
-}
-
-type teardownPrinter struct {
-	Report Reporter
-}
-
-type entry struct {
+type menuNode struct {
 	label    string
-	path     []string
-	children []entry
+	order    int
+	cmd      *cobra.Command
+	children []menuNode
 }
 
 type menuScreen struct {
-	title   string
-	entries []entry
-	leave   string
+	title string
+	nodes []menuNode
+	leave string
+}
+
+type menuGroupInfo struct {
+	group uikit.MenuGroup
+	label string
+	order int
 }

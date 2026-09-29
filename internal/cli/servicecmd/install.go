@@ -20,7 +20,7 @@ func (g *Group) installCmd() *cobra.Command {
 			return g.InstallService(cmd.Context())
 		},
 	}
-	return uikit.RequireCloudflared(cmd)
+	return mark(uikit.RequireCloudflared(cmd), msg.MenuServiceInstall, orderInstall)
 }
 
 func (g *Group) InstallService(ctx context.Context) error {

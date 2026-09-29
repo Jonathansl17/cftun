@@ -20,7 +20,7 @@ func (g *Group) editCmd() *cobra.Command {
 	cmd.Flags().StringVar(&flags.NewHost, flagNewHost, noDefault, msg.FlagNewHost)
 	bindPort(cmd, &flags)
 	bindOptions(cmd, &flags)
-	return uikit.RequireCloudflared(cmd)
+	return mark(uikit.RequireCloudflared(cmd), msg.MenuEdit, orderEdit)
 }
 
 func (g *Group) editRoute(cmd *cobra.Command, flags routeFlags) error {

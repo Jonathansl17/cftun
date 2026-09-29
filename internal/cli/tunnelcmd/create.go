@@ -8,12 +8,13 @@ import (
 )
 
 func (g *Group) createCmd() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   useCreate,
 		Short: msg.TunnelCreateShort,
 		Args:  cobra.MaximumNArgs(maxNameArgs),
 		RunE:  g.create,
 	}
+	return mark(cmd, msg.MenuTunnelCreate, orderCreate)
 }
 
 func (g *Group) create(cmd *cobra.Command, args []string) error {

@@ -8,11 +8,12 @@ import (
 )
 
 func (g *Group) listCmd() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   useList,
 		Short: msg.TunnelListShort,
 		RunE:  g.list,
 	}
+	return mark(cmd, msg.MenuTunnelList, orderList)
 }
 
 func (g *Group) list(cmd *cobra.Command, _ []string) error {
