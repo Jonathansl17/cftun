@@ -32,4 +32,12 @@ const (
 	tokenFile     = "token"
 	tokenFilePerm = 0o600
 	tokenDirPerm  = 0o700
+
+	locateConfigDirFormat = "locate config dir: %w"
+	readTokenFormat       = "read token: %w"
+	createTokenDirFormat  = "create token dir: %w"
+	writeTokenFormat      = "write token: %w"
+	restrictTokenFormat   = "restrict token file: %w"
+	removeTokenFormat     = "remove token: %w"
+	removeTokenDirFormat  = "remove token dir: %w"
 )

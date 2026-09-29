@@ -17,6 +17,9 @@ const (
 	MinPort            = 1
 	MaxPort            = 65535
 	localServiceFormat = "http://localhost:%d"
+
+	parseConfigFormat  = "parse config: %w"
+	encodeConfigFormat = "encode config: %w"
 )
 
 var hostnamePattern = regexp.MustCompile(`^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$`)

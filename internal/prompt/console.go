@@ -42,7 +42,7 @@ func (c *Console) line() (string, error) {
 		return "", ErrAborted
 	}
 	if err != nil && !errors.Is(err, io.EOF) {
-		return "", fmt.Errorf("read input: %w", err)
+		return "", fmt.Errorf(readInputFormat, err)
 	}
 	return strings.TrimSpace(text), nil
 }

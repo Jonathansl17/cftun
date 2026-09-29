@@ -1,6 +1,10 @@
 package prompt
 
-const lineDelimiter = '\n'
+const (
+	lineDelimiter = '\n'
+
+	readInputFormat = "read input: %w"
+)
 
 var yesAnswers = map[string]bool{
 	"y":   true,

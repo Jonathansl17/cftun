@@ -13,7 +13,7 @@ import (
 func NewTokenStore() (TokenStore, error) {
 	dir, err := os.UserConfigDir()
 	if err != nil {
-		return TokenStore{}, fmt.Errorf("locate config dir: %w", err)
+		return TokenStore{}, fmt.Errorf(locateConfigDirFormat, err)
 	}
 	return TokenStore{Path: filepath.Join(dir, tokenDir, tokenFile), Env: os.Getenv}, nil
 }
@@ -31,31 +31,31 @@ func (s TokenStore) Load() (string, error) {
 		return "", nil
 	}
 	if err != nil {
-		return "", fmt.Errorf("read token: %w", err)
+		return "", fmt.Errorf(readTokenFormat, err)
 	}
 	return strings.TrimSpace(string(data)), nil
 }
 
 func (s TokenStore) Save(token string) error {
 	if err := os.MkdirAll(filepath.Dir(s.Path), tokenDirPerm); err != nil {
-		return fmt.Errorf("create token dir: %w", err)
+		return fmt.Errorf(createTokenDirFormat, err)
 	}
 	if err := os.WriteFile(s.Path, []byte(token), tokenFilePerm); err != nil {
-		return fmt.Errorf("write token: %w", err)
+		return fmt.Errorf(writeTokenFormat, err)
 	}
 	if err := os.Chmod(s.Path, tokenFilePerm); err != nil {
-		return fmt.Errorf("restrict token file: %w", err)
+		return fmt.Errorf(restrictTokenFormat, err)
 	}
 	return nil
 }
 
 func (s TokenStore) Clear() error {
 	if err := os.Remove(s.Path); err != nil && !errors.Is(err, fs.ErrNotExist) {
-		return fmt.Errorf("remove token: %w", err)
+		return fmt.Errorf(removeTokenFormat, err)
 	}
 	err := os.Remove(filepath.Dir(s.Path))
 	if err != nil && !errors.Is(err, fs.ErrNotExist) && !errors.Is(err, syscall.ENOTEMPTY) {
-		return fmt.Errorf("remove token dir: %w", err)
+		return fmt.Errorf(removeTokenDirFormat, err)
 	}
 	return nil
 }

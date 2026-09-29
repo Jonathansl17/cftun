@@ -13,7 +13,7 @@ import (
 func (r Runner) Run(ctx context.Context, localURL string) error {
 	config, err := r.Files.EmptyTemp(paths.QuickConfigPattern)
 	if err != nil {
-		return fmt.Errorf("create quick tunnel config: %w", err)
+		return fmt.Errorf(createConfigFormat, err)
 	}
 	runErr := r.run(ctx, config, localURL)
 	if removeErr := config.Remove(); removeErr != nil {

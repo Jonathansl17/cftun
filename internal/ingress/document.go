@@ -10,7 +10,7 @@ import (
 func Parse(data []byte) (*Document, error) {
 	var n yaml.Node
 	if err := yaml.Unmarshal(data, &n); err != nil {
-		return nil, fmt.Errorf("parse config: %w", err)
+		return nil, fmt.Errorf(parseConfigFormat, err)
 	}
 	if n.Kind != yaml.DocumentNode || len(n.Content) == 0 || n.Content[0].Kind != yaml.MappingNode {
 		return nil, ErrMalformed
@@ -33,10 +33,10 @@ func (d *Document) Bytes() ([]byte, error) {
 	enc := yaml.NewEncoder(&buf)
 	enc.SetIndent(yamlIndent)
 	if err := enc.Encode(d.doc); err != nil {
-		return nil, fmt.Errorf("encode config: %w", err)
+		return nil, fmt.Errorf(encodeConfigFormat, err)
 	}
 	if err := enc.Close(); err != nil {
-		return nil, fmt.Errorf("encode config: %w", err)
+		return nil, fmt.Errorf(encodeConfigFormat, err)
 	}
 	return buf.Bytes(), nil
 }

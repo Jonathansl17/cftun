@@ -27,4 +27,6 @@ const (
 
 	outputJSON       = "json"
 	quickGracePeriod = "1s"
+
+	parseTunnelListFormat = "parse tunnel list: %w"
 )

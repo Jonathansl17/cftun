@@ -16,7 +16,7 @@ func (w ElevatedWriter) WriteFile(ctx context.Context, path string, data []byte)
 		return nil
 	}
 	if !errors.Is(err, fs.ErrPermission) && !errors.Is(err, fs.ErrNotExist) {
-		return fmt.Errorf("write %s: %w", path, err)
+		return fmt.Errorf(writeFileFormat, path, err)
 	}
 	return w.writeElevated(ctx, path, data)
 }
@@ -27,7 +27,7 @@ func (w ElevatedWriter) RemoveFile(ctx context.Context, path string) error {
 		return nil
 	}
 	if !errors.Is(err, fs.ErrPermission) {
-		return fmt.Errorf("remove %s: %w", path, err)
+		return fmt.Errorf(removeFileFormat, path, err)
 	}
 	return w.Runner.Stream(ctx, sysexec.Command{
 		Name:       removeBinary,
@@ -39,7 +39,7 @@ func (w ElevatedWriter) RemoveFile(ctx context.Context, path string) error {
 func (w ElevatedWriter) writeElevated(ctx context.Context, path string, data []byte) (err error) {
 	tmp, err := os.CreateTemp("", tempFilePattern)
 	if err != nil {
-		return fmt.Errorf("create temp file: %w", err)
+		return fmt.Errorf(createTempFormat, err)
 	}
 	defer func() {
 		if removeErr := os.Remove(tmp.Name()); removeErr != nil {
@@ -48,10 +48,10 @@ func (w ElevatedWriter) writeElevated(ctx context.Context, path string, data []b
 	}()
 	if _, err := tmp.Write(data); err != nil {
 		tmp.Close()
-		return fmt.Errorf("write temp file: %w", err)
+		return fmt.Errorf(writeTempFormat, err)
 	}
 	if err := tmp.Close(); err != nil {
-		return fmt.Errorf("close temp file: %w", err)
+		return fmt.Errorf(closeTempFormat, err)
 	}
 	return w.Runner.Stream(ctx, sysexec.Command{
 		Name:       installBinary,

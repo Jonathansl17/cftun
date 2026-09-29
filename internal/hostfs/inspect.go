@@ -18,7 +18,7 @@ func (FS) KindOf(path string) (Kind, error) {
 		return KindMissing, nil
 	}
 	if err != nil {
-		return KindOther, fmt.Errorf("inspect %s: %w", path, err)
+		return KindOther, fmt.Errorf(inspectFormat, path, err)
 	}
 	switch mode := info.Mode(); {
 	case mode&os.ModeSymlink != 0:

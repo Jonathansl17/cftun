@@ -37,7 +37,7 @@ func (c Client) ListTunnels(ctx context.Context) ([]Tunnel, error) {
 	}
 	var tunnels []Tunnel
 	if err := json.Unmarshal([]byte(out), &tunnels); err != nil {
-		return nil, fmt.Errorf("parse tunnel list: %w", err)
+		return nil, fmt.Errorf(parseTunnelListFormat, err)
 	}
 	return tunnels, nil
 }

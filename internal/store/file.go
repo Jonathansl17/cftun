@@ -30,7 +30,7 @@ func (f File) Load() (*ingress.Document, error) {
 		return nil, apperr.Wrap(f.Path(), ErrMissing)
 	}
 	if err != nil {
-		return nil, fmt.Errorf("read %s: %w", f.Path(), err)
+		return nil, fmt.Errorf(readFileFormat, f.Path(), err)
 	}
 	return ingress.Parse(data)
 }
@@ -49,7 +49,7 @@ func (f File) Save(ctx context.Context, doc *ingress.Document) error {
 func (f File) Restore(ctx context.Context) error {
 	data, err := os.ReadFile(f.BackupPath())
 	if err != nil {
-		return fmt.Errorf("read backup: %w", err)
+		return fmt.Errorf(readBackupFormat, err)
 	}
 	return f.Writer.WriteFile(ctx, f.Path(), data)
 }
@@ -64,7 +64,7 @@ func (f File) backup(ctx context.Context) error {
 		return nil
 	}
 	if err != nil {
-		return fmt.Errorf("read %s: %w", f.Path(), err)
+		return fmt.Errorf(readFileFormat, f.Path(), err)
 	}
 	return f.Writer.WriteFile(ctx, f.BackupPath(), data)
 }
