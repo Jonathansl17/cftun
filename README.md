@@ -19,7 +19,7 @@ plain HTTP on `localhost`. No Nginx, no open ports, no certificates.
 ### One-liner (recommended, pinned to the latest stable tag)
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Jonathansl17/cftun/v1.0.2/install.sh | CFTUN_VERSION=v1.0.2 bash
+curl -fsSL https://raw.githubusercontent.com/Jonathansl17/cftun/v1.1.0/install.sh | CFTUN_VERSION=v1.1.0 bash
 ```
 
 Tags are immutable, so this URL is not affected by the GitHub raw CDN cache.
@@ -75,7 +75,7 @@ ssh user@server 'sudo install -m 0755 ~/cftun /usr/local/bin/cftun'
 To build every architecture at once into `dist/` with checksums:
 
 ```sh
-scripts/build-release.sh v1.0.2
+scripts/build-release.sh v1.1.0
 ```
 
 ## Quick start
