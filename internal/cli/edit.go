@@ -26,8 +26,10 @@ func newEditCmd(a *App) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			if err := a.Routes.Edit(cmd.Context(), rule.Hostname, updated, opts); err != nil {
-				return err
+			out, err := a.Editor.Edit(cmd.Context(), rule.Hostname, updated, opts)
+			printOutcome(a, rule.Hostname, out)
+			if err != nil {
+				return present(err)
 			}
 			a.Printf(msg.InfoAdded, updated.Hostname, updated.Service)
 			return nil

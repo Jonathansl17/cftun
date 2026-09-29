@@ -9,11 +9,11 @@ import (
 
 	"github.com/Jonathansl17/cftun/internal/ingress"
 	"github.com/Jonathansl17/cftun/internal/msg"
+	"github.com/Jonathansl17/cftun/internal/paths"
 	"github.com/Jonathansl17/cftun/internal/sysexec"
 )
 
 const (
-	emptyConfigPattern = "cftun-quick-*.yml"
 	emptyConfigContent = "no-autoupdate: true\n"
 )
 
@@ -39,7 +39,7 @@ func runQuickTunnel(ctx context.Context, a *App, port string) error {
 	if err := ensureInstalled(ctx, a, false); err != nil {
 		return err
 	}
-	empty, err := os.CreateTemp("", emptyConfigPattern)
+	empty, err := os.CreateTemp("", paths.QuickConfigPattern)
 	if err != nil {
 		return fmt.Errorf("create empty config: %w", err)
 	}

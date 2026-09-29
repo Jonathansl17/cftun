@@ -6,6 +6,8 @@ const (
 	fileModeFormat  = "%04o"
 	tempFilePattern = "cftun-*"
 
+	removeTempFormat = "remove temp file: %w"
+
 	installBinary = "install"
 	installDirs   = "-D"
 	installMode   = "-m"

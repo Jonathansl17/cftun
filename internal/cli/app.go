@@ -21,6 +21,7 @@ import (
 	"github.com/Jonathansl17/cftun/internal/service"
 	"github.com/Jonathansl17/cftun/internal/store"
 	"github.com/Jonathansl17/cftun/internal/sysexec"
+	"github.com/Jonathansl17/cftun/internal/teardown"
 )
 
 const (
@@ -31,20 +32,23 @@ const (
 )
 
 type App struct {
-	Out        io.Writer
-	Home       string
-	Files      hostfs.FS
-	ConfigPath string
-	Runner     sysexec.Runner
-	Store      store.File
-	Tunnels    cloudflared.Client
-	Service    service.Controller
-	Installer  installer.Installer
-	Tokens     dnsapi.TokenStore
-	DNS        dnsapi.Client
-	Health     health.Checker
-	Prompt     prompt.Prompter
-	Routes     routes.Manager
+	Out         io.Writer
+	Home        string
+	Files       hostfs.FS
+	ConfigPath  string
+	Runner      sysexec.Runner
+	Store       store.File
+	Tunnels     cloudflared.Client
+	Service     service.Controller
+	Installer   installer.Installer
+	Tokens      dnsapi.TokenStore
+	DNS         dnsapi.Client
+	Health      health.Checker
+	Prompt      prompt.Prompter
+	Editor      routes.Editor
+	Checker     routes.Validator
+	Initializer routes.Initializer
+	Teardown    teardown.Procedure
 
 	CftunRemoved bool
 }
@@ -78,9 +82,19 @@ func (a *App) wire(in io.Reader) {
 	a.DNS = dnsapi.Client{HTTP: &http.Client{Timeout: apiTimeout}, BaseURL: dnsapi.DefaultBaseURL, Tokens: a.Tokens}
 	a.Health = health.Checker{HTTP: &http.Client{Timeout: probeTimeout}}
 	a.Prompt = prompt.NewConsole(in, a.Out, promptTexts())
-	a.Routes = routes.Manager{
-		ConfigPath: a.ConfigPath, Store: a.Store, Tunnels: a.Tunnels,
-		Service: a.Service, DNS: a.DNS, Report: a,
+	a.wireRoutes()
+}
+
+func (a *App) wireRoutes() {
+	dns := routes.DNSCleaner{API: a.DNS}
+	a.Checker = routes.Validator{Path: a.Store, Tunnels: a.Tunnels}
+	a.Editor = routes.Editor{Store: a.Store, Checker: a.Checker, Router: a.Tunnels, DNS: dns, Restarter: a.Service}
+	a.Initializer = routes.Initializer{Store: a.Store, Checker: a.Checker, Catalog: a.Tunnels, Home: a.Files, Files: a.Files}
+	a.Teardown = teardown.Procedure{
+		Config: a.Store, Tunnels: a.Tunnels, Service: a.Service, Package: a.Installer, DNS: dns,
+		Files:    teardown.SafeRemover{Runner: a.Runner, Inspector: a.Files},
+		Temp:     a.Files,
+		Observer: teardownPrinter{Report: a},
 	}
 }
 

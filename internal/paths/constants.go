@@ -1,9 +1,10 @@
 package paths
 
 const (
-	CloudflaredBinary = "cloudflared"
-	UserDirName       = ".cloudflared"
-	CertFile          = "cert.pem"
+	CloudflaredBinary  = "cloudflared"
+	UserDirName        = ".cloudflared"
+	CertFile           = "cert.pem"
+	QuickConfigPattern = "cftun-quick-*.yml"
 
 	ConfigDir      = "/etc/cloudflared"
 	DefaultConfig  = "/etc/cloudflared/config.yml"

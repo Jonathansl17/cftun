@@ -39,7 +39,7 @@ func askPort(a *App, value, label string) (int, error) {
 }
 
 func pickRule(a *App, value string) (ingress.Rule, error) {
-	rules, err := a.Routes.List()
+	rules, err := a.Editor.List()
 	if err != nil {
 		return ingress.Rule{}, err
 	}

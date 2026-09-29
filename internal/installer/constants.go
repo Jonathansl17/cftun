@@ -49,6 +49,7 @@ const (
 	hashFileFormat         = "hash %s: %w"
 	parseURLFormat         = "parse url %q: %w"
 	createDirFormat        = "create download dir: %w"
+	removeDirFormat        = "remove download dir: %w"
 	queryFailedFormat      = "query package %s: %w"
 	readOSReleaseFormat    = "read %s: %w"
 

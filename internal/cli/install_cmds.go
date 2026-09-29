@@ -9,7 +9,6 @@ import (
 
 	"github.com/Jonathansl17/cftun/internal/msg"
 	"github.com/Jonathansl17/cftun/internal/store"
-	"github.com/Jonathansl17/cftun/internal/teardown"
 )
 
 var errCancelled = errors.New(msg.ErrCancelled)
@@ -73,20 +72,12 @@ func newUninstallCmd(a *App) *cobra.Command {
 }
 
 func uninstall(ctx context.Context, a *App, keepCftun bool) error {
-	steps := teardown.Steps{
-		Runner:            a.Runner,
-		Load:              a.Store.Load,
-		DeleteDNS:         a.Routes.DeleteDNS,
-		Tunnels:           &a.Tunnels,
-		Service:           a.Service,
-		Uninstall:         a.Installer.Uninstall,
-		Installed:         func(ctx context.Context) bool { _, err := a.Tunnels.Version(ctx); return err == nil },
-		ServiceRegistered: a.Service.Registered,
-		Report:            a,
-		Paths:             []string{a.ConfigPath, a.Store.BackupPath(), a.UserCloudflaredDir()},
-	}
-	if err := steps.Run(ctx); err != nil {
+	params, err := teardownParams(a)
+	if err != nil {
 		return err
+	}
+	if err := a.Teardown.Run(ctx, params); err != nil {
+		return teardownFailure(err)
 	}
 	if err := a.Tokens.Clear(); err != nil {
 		return err

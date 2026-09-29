@@ -2,37 +2,33 @@ package routes
 
 import (
 	"context"
-	"errors"
-	"fmt"
-	"os"
 
+	"github.com/Jonathansl17/cftun/internal/apperr"
 	"github.com/Jonathansl17/cftun/internal/cloudflared"
 	"github.com/Jonathansl17/cftun/internal/ingress"
 )
 
-var (
-	ErrConfigExists   = errors.New("config already exists, pass --force to overwrite it")
-	ErrTunnelNotFound = errors.New("tunnel not found, create it with `cftun tunnels create`")
-)
-
-func (m Manager) Init(ctx context.Context, tunnelRef, home string, force bool) error {
-	if m.Store.Exists() && !force {
-		return ErrConfigExists
-	}
-	tunnels, err := m.Tunnels.ListTunnels(ctx)
+func (i Initializer) Init(ctx context.Context, tunnelRef string) (string, error) {
+	home, err := i.Home.Home()
 	if err != nil {
-		return err
+		return "", err
+	}
+	tunnels, err := i.Catalog.ListTunnels(ctx)
+	if err != nil {
+		return "", err
 	}
 	tunnel, ok := cloudflared.FindTunnel(tunnels, tunnelRef)
 	if !ok {
-		return fmt.Errorf("%s: %w", tunnelRef, ErrTunnelNotFound)
+		return "", apperr.Wrap(tunnelRef, ErrTunnelNotFound)
 	}
 	creds := cloudflared.CredentialsPath(home, tunnel.ID)
-	if _, err := os.Stat(creds); err != nil {
-		return fmt.Errorf("credentials file: %w", err)
+	if !i.Files.Exists(creds) {
+		return "", apperr.Wrap(creds, ErrCredentialsMissing)
 	}
-	if err := m.Store.Save(ctx, ingress.New(tunnel.ID, creds)); err != nil {
-		return err
+	a := applier{store: i.Store, checker: i.Checker}
+	rollback := a.discard
+	if i.Store.Exists() {
+		rollback = a.restore
 	}
-	return m.Validate(ctx)
+	return a.commit(ctx, ingress.New(tunnel.ID, creds), rollback)
 }

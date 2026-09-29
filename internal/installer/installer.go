@@ -2,6 +2,7 @@ package installer
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -27,7 +28,7 @@ func (i Installer) Install(ctx context.Context) error {
 	return i.downloadAndInstall(ctx, p, name)
 }
 
-func (i Installer) downloadAndInstall(ctx context.Context, p plan, name string) error {
+func (i Installer) downloadAndInstall(ctx context.Context, p plan, name string) (err error) {
 	asset, err := i.findAsset(ctx, name)
 	if err != nil {
 		return err
@@ -36,7 +37,11 @@ func (i Installer) downloadAndInstall(ctx context.Context, p plan, name string) 
 	if err != nil {
 		return fmt.Errorf(createDirFormat, err)
 	}
-	defer os.RemoveAll(dir)
+	defer func() {
+		if removeErr := os.RemoveAll(dir); removeErr != nil {
+			err = errors.Join(err, fmt.Errorf(removeDirFormat, removeErr))
+		}
+	}()
 	file := filepath.Join(dir, asset.Name)
 	if err := i.Downloader.Download(ctx, asset.URL, file); err != nil {
 		return err

@@ -36,12 +36,16 @@ func (w ElevatedWriter) RemoveFile(ctx context.Context, path string) error {
 	})
 }
 
-func (w ElevatedWriter) writeElevated(ctx context.Context, path string, data []byte) error {
+func (w ElevatedWriter) writeElevated(ctx context.Context, path string, data []byte) (err error) {
 	tmp, err := os.CreateTemp("", tempFilePattern)
 	if err != nil {
 		return fmt.Errorf("create temp file: %w", err)
 	}
-	defer os.Remove(tmp.Name())
+	defer func() {
+		if removeErr := os.Remove(tmp.Name()); removeErr != nil {
+			err = errors.Join(err, fmt.Errorf(removeTempFormat, removeErr))
+		}
+	}()
 	if _, err := tmp.Write(data); err != nil {
 		tmp.Close()
 		return fmt.Errorf("write temp file: %w", err)

@@ -35,9 +35,11 @@ func initConfig(ctx context.Context, a *App, tunnel string, force bool) error {
 			return orCancelled(err)
 		}
 	}
-	if err := a.Routes.Init(ctx, tunnel, a.Home, true); err != nil {
-		return err
+	validation, err := a.Initializer.Init(ctx, tunnel)
+	if err != nil {
+		return present(err)
 	}
+	a.Printf(msg.InfoValidated, validation)
 	a.Printf(msg.InfoConfigWritten, a.ConfigPath)
 	return nil
 }

@@ -45,8 +45,10 @@ func newRemoveCmd(a *App) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			if err := a.Routes.Remove(cmd.Context(), rule.Hostname, opts); err != nil {
-				return err
+			out, err := a.Editor.Remove(cmd.Context(), rule.Hostname, opts)
+			printOutcome(a, rule.Hostname, out)
+			if err != nil {
+				return present(err)
 			}
 			a.Printf(msg.InfoRemoved, rule.Hostname)
 			return nil
@@ -67,8 +69,10 @@ func addRoute(ctx context.Context, a *App, host, port string, opts routes.Option
 		return err
 	}
 	rule := ingress.Rule{Hostname: hostname, Service: ingress.LocalService(p)}
-	if err := a.Routes.Add(ctx, rule, opts); err != nil {
-		return err
+	out, err := a.Editor.Add(ctx, rule, opts)
+	printOutcome(a, rule.Hostname, out)
+	if err != nil {
+		return present(err)
 	}
 	a.Printf(msg.InfoAdded, rule.Hostname, rule.Service)
 	return nil

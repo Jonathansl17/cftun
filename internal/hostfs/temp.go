@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 func (FS) EmptyTemp(pattern string) (Temp, error) {
@@ -23,4 +24,12 @@ func (t Temp) Remove() error {
 		return fmt.Errorf("remove temp file: %w", err)
 	}
 	return nil
+}
+
+func (FS) TempMatches(pattern string) ([]string, error) {
+	matches, err := filepath.Glob(filepath.Join(os.TempDir(), pattern))
+	if err != nil {
+		return nil, fmt.Errorf("glob temp files: %w", err)
+	}
+	return matches, nil
 }

@@ -35,7 +35,6 @@ const (
 	ErrEmpty              = "a value is required"
 	ErrNoRules            = "there are no routes yet, add one first"
 	ErrCancelled          = "cancelled"
-	ErrRolledBack         = "cloudflared rejected the config, previous version restored"
 	ErrCloudflaredMissing = "cloudflared is required, install it with \"cftun install\""
 )
 
@@ -68,15 +67,6 @@ const (
 	WarnManualDNS        = "No API token: delete the CNAME record of %s in the Cloudflare dashboard (DNS > Records).\n"
 	WarnNoConfig         = "Skipping routes and tunnel: %v\n"
 	WarnStepFailed       = "warning: %s failed: %v\n"
-)
-
-const (
-	StepStopService      = "stop service"
-	StepDeleteDNS        = "delete DNS record"
-	StepDeleteTunnel     = "delete tunnel"
-	StepUninstallService = "unregister service"
-	StepRemovePackage    = "remove package"
-	StepRemoveFiles      = "remove files"
 )
 
 const (

@@ -25,7 +25,7 @@ func newListCmd(a *App) *cobra.Command {
 		Aliases: []string{"ls"},
 		Short:   msg.ListShort,
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			rules, err := a.Routes.List()
+			rules, err := a.Editor.List()
 			if err != nil {
 				return err
 			}
@@ -49,7 +49,7 @@ func newCheckCmd(a *App) *cobra.Command {
 		Use:   "check",
 		Short: msg.CheckShort,
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			rules, err := a.Routes.List()
+			rules, err := a.Editor.List()
 			if err != nil {
 				return err
 			}
@@ -67,7 +67,12 @@ func newValidateCmd(a *App) *cobra.Command {
 		Short:       msg.ValidateShort,
 		Annotations: needsCloudflared,
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			return a.Routes.Validate(cmd.Context())
+			validation, err := a.Checker.Validate(cmd.Context())
+			if err != nil {
+				return err
+			}
+			a.Printf(msg.InfoValidated, validation)
+			return nil
 		},
 	}
 }
