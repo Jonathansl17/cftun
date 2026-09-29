@@ -8,6 +8,7 @@ const (
 	KindMissing Kind = iota
 	KindRegular
 	KindDirectory
+	KindSymlink
 	KindOther
 )
 

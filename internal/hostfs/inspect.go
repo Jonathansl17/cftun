@@ -21,6 +21,8 @@ func (FS) KindOf(path string) (Kind, error) {
 		return KindOther, fmt.Errorf("inspect %s: %w", path, err)
 	}
 	switch mode := info.Mode(); {
+	case mode&os.ModeSymlink != 0:
+		return KindSymlink, nil
 	case mode.IsRegular():
 		return KindRegular, nil
 	case mode.IsDir():

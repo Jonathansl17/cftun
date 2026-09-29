@@ -27,6 +27,14 @@ type Target struct {
 	Kind TargetKind
 }
 
+type removal int
+
+const (
+	removalSkip removal = iota
+	removalPlain
+	removalRecursive
+)
+
 type Step int
 
 const (

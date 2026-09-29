@@ -21,39 +21,47 @@ func (r SafeRemover) RemoveAll(ctx context.Context, targets []Target) error {
 func (r SafeRemover) plan(targets []Target) ([]string, []string, error) {
 	var recursive, plain []string
 	for _, target := range targets {
-		remove, err := r.vet(target)
+		mode, err := r.vet(target)
 		if err != nil {
 			return nil, nil, err
 		}
-		switch {
-		case !remove:
-		case target.Kind == TargetDirectory:
+		switch mode {
+		case removalRecursive:
 			recursive = append(recursive, target.Path)
-		default:
+		case removalPlain:
 			plain = append(plain, target.Path)
 		}
 	}
 	return recursive, plain, nil
 }
 
-func (r SafeRemover) vet(target Target) (bool, error) {
+func (r SafeRemover) vet(target Target) (removal, error) {
 	if !filepath.IsAbs(target.Path) || filepath.Clean(target.Path) != target.Path {
-		return false, &UnsafeTargetError{Path: target.Path, Kind: target.Kind}
+		return removalSkip, &UnsafeTargetError{Path: target.Path, Kind: target.Kind}
 	}
 	if isSystemTarget(target) {
-		return true, nil
+		return kindRemoval(target), nil
 	}
 	kind, err := r.Inspector.KindOf(target.Path)
 	if err != nil {
-		return false, err
+		return removalSkip, err
 	}
-	if kind == hostfs.KindMissing {
-		return false, nil
+	switch {
+	case kind == hostfs.KindMissing:
+		return removalSkip, nil
+	case kind == hostfs.KindSymlink:
+		return removalPlain, nil
+	case !allowedUserTarget(target, kind):
+		return removalSkip, &UnsafeTargetError{Path: target.Path, Kind: target.Kind}
 	}
-	if !allowedUserTarget(target, kind) {
-		return false, &UnsafeTargetError{Path: target.Path, Kind: target.Kind}
+	return kindRemoval(target), nil
+}
+
+func kindRemoval(target Target) removal {
+	if target.Kind == TargetDirectory {
+		return removalRecursive
 	}
-	return true, nil
+	return removalPlain
 }
 
 func (r SafeRemover) remove(ctx context.Context, flags string, targets []string) error {
