@@ -37,8 +37,8 @@ type Steps struct {
 	Service   interface {
 		Run(context.Context, service.Action) error
 	}
-	Uninstall func(ctx context.Context) error
-	Installed func(ctx context.Context) bool
+	Uninstall         func(ctx context.Context) error
+	Installed         func(ctx context.Context) bool
 	ServiceRegistered func() bool
 	Report            interface{ Printf(string, ...any) }
 	// Paths are extra files to delete: config, backup, user credentials.
