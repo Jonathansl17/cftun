@@ -74,13 +74,6 @@ To build every architecture at once into `dist/` with checksums:
 scripts/build-release.sh v1.0.1
 ```
 
-### Publishing a release
-
-```sh
-scripts/build-release.sh v1.0.1
-gh release create v1.0.1 dist/* --title "v1.0.1" --notes "..."
-```
-
 ## Quick start
 
 On a fresh machine, run the guided setup as your normal user (not with sudo;
