@@ -8,12 +8,6 @@ import (
 	"os"
 )
 
-const downloadPerm = 0o644
-
-type HTTPDownloader struct {
-	Client *http.Client
-}
-
 func (d HTTPDownloader) Download(ctx context.Context, url, dest string) error {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {

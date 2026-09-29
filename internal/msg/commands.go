@@ -1,5 +1,7 @@
 package msg
 
+import "github.com/Jonathansl17/cftun/internal/service"
+
 const (
 	RootShort = "Manage a Cloudflare Tunnel and its public hostnames"
 	RootLong  = `cftun installs cloudflared, creates a tunnel, publishes local ports on
@@ -59,14 +61,14 @@ anything permanent.`
 	ServiceInstallShort = "Register, enable and start the service"
 )
 
-var ServiceActionShort = map[string]string{
-	"enable":  "Start the service on boot",
-	"disable": "Do not start the service on boot",
-	"start":   "Start the service",
-	"stop":    "Stop the service",
-	"restart": "Restart the service to apply config changes",
-	"status":  "Show the service status",
-	"logs":    "Follow the service logs (Ctrl+C to stop)",
+var ServiceActionShort = map[service.Action]string{
+	service.Enable:  "Start the service on boot",
+	service.Disable: "Do not start the service on boot",
+	service.Start:   "Start the service",
+	service.Stop:    "Stop the service",
+	service.Restart: "Restart the service to apply config changes",
+	service.Status:  "Show the service status",
+	service.Logs:    "Follow the service logs (Ctrl+C to stop)",
 }
 
 const (

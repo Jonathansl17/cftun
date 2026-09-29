@@ -21,7 +21,7 @@ func newServiceCmd(a *App) *cobra.Command {
 		action := action
 		cmd.AddCommand(&cobra.Command{
 			Use:   string(action),
-			Short: msg.ServiceActionShort[string(action)],
+			Short: msg.ServiceActionShort[action],
 			RunE: func(cmd *cobra.Command, _ []string) error {
 				return a.Service.Run(cmd.Context(), action)
 			},
@@ -34,7 +34,7 @@ func installService(cmd *cobra.Command, a *App) error {
 	if !a.Store.Exists() {
 		return errConfigMissing(a)
 	}
-	if service.Installed(a.Files.Exists) {
+	if a.Service.Registered() {
 		a.Printf(msg.InfoServiceExists)
 	} else if err := a.Tunnels.InstallService(cmd.Context()); err != nil {
 		return err
@@ -42,5 +42,5 @@ func installService(cmd *cobra.Command, a *App) error {
 	if err := a.Service.Run(cmd.Context(), service.Enable); err != nil {
 		a.Printf(msg.WarnStepFailed, service.Enable, err)
 	}
-	return a.Service.Run(cmd.Context(), service.Restart)
+	return a.Service.Restart(cmd.Context())
 }

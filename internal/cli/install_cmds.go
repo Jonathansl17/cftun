@@ -8,7 +8,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/Jonathansl17/cftun/internal/msg"
-	"github.com/Jonathansl17/cftun/internal/service"
 	"github.com/Jonathansl17/cftun/internal/store"
 	"github.com/Jonathansl17/cftun/internal/teardown"
 )
@@ -33,7 +32,11 @@ func ensureInstalled(ctx context.Context, a *App, force bool) error {
 		a.Printf(msg.InfoAlreadyInstalled, version)
 		return nil
 	}
-	a.Printf(msg.InfoInstalling, a.Installer.Family)
+	family, err := a.Installer.Family()
+	if err != nil {
+		return err
+	}
+	a.Printf(msg.InfoInstalling, family)
 	if err := a.Installer.Install(ctx); err != nil {
 		return err
 	}
@@ -78,7 +81,7 @@ func uninstall(ctx context.Context, a *App, keepCftun bool) error {
 		Service:           a.Service,
 		Uninstall:         a.Installer.Uninstall,
 		Installed:         func(ctx context.Context) bool { _, err := a.Tunnels.Version(ctx); return err == nil },
-		ServiceRegistered: func() bool { return service.Installed(a.Files.Exists) },
+		ServiceRegistered: a.Service.Registered,
 		Report:            a,
 		Paths:             []string{a.ConfigPath, a.Store.BackupPath(), a.UserCloudflaredDir()},
 	}

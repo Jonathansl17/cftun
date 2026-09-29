@@ -1,10 +1,8 @@
 package cli
 
 import (
-	"errors"
 	"fmt"
 	"io"
-	"io/fs"
 	"net/http"
 	"os"
 	"os/exec"
@@ -40,7 +38,7 @@ type App struct {
 	Runner     sysexec.Runner
 	Store      store.File
 	Tunnels    cloudflared.Client
-	Service    service.Manager
+	Service    service.Controller
 	Installer  installer.Installer
 	Tokens     dnsapi.TokenStore
 	DNS        dnsapi.Client
@@ -65,23 +63,19 @@ func NewApp(configPath string, in io.Reader, out io.Writer) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	family, err := detectFamily()
-	if err != nil {
-		return nil, err
-	}
 	a := &App{Out: out, Home: home, Files: files, ConfigPath: configPath, Runner: sysexec.NewShell(), Tokens: tokens}
-	a.wire(family, token, in)
+	a.wire(token, in)
 	return a, nil
 }
 
-func (a *App) wire(family installer.Family, token string, in io.Reader) {
+func (a *App) wire(token string, in io.Reader) {
 	a.Store = store.File{Locator: FixedLocator{Path: a.ConfigPath}, Writer: store.ElevatedWriter{Runner: a.Runner}}
 	a.Tunnels = cloudflared.Client{Runner: a.Runner}
 	a.Service = service.Detect(a.Runner, a.Files.Exists, exec.LookPath)
 	a.Installer = installer.Installer{
 		Runner:     a.Runner,
 		Downloader: installer.HTTPDownloader{Client: &http.Client{Timeout: downloadTimeout}},
-		Family:     family,
+		Families:   installer.OSReleaseSource{},
 		GoArch:     runtime.GOARCH,
 	}
 	a.DNS = dnsapi.Client{HTTP: &http.Client{Timeout: apiTimeout}, BaseURL: dnsapi.DefaultBaseURL, Token: token}
@@ -99,18 +93,6 @@ func (a *App) Printf(format string, args ...any) {
 
 func (a *App) UserCloudflaredDir() string {
 	return filepath.Join(a.Home, paths.UserDirName)
-}
-
-func detectFamily() (installer.Family, error) {
-	f, err := os.Open(installer.OSReleasePath)
-	if errors.Is(err, fs.ErrNotExist) {
-		return installer.FamilyUnknown, nil
-	}
-	if err != nil {
-		return installer.FamilyUnknown, fmt.Errorf("read %s: %w", installer.OSReleasePath, err)
-	}
-	defer f.Close()
-	return installer.DetectFamily(f)
 }
 
 func ResolveConfigPath(flag string) string {
