@@ -33,3 +33,10 @@ func (FS) TempMatches(pattern string) ([]string, error) {
 	}
 	return matches, nil
 }
+
+func (t Temp) Write(content string) error {
+	if err := os.WriteFile(t.Path, []byte(content), tempFilePerm); err != nil {
+		return fmt.Errorf("write temp file: %w", err)
+	}
+	return nil
+}

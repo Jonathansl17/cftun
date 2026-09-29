@@ -17,6 +17,7 @@ import (
 	"github.com/Jonathansl17/cftun/internal/installer"
 	"github.com/Jonathansl17/cftun/internal/paths"
 	"github.com/Jonathansl17/cftun/internal/prompt"
+	"github.com/Jonathansl17/cftun/internal/quicktunnel"
 	"github.com/Jonathansl17/cftun/internal/routes"
 	"github.com/Jonathansl17/cftun/internal/service"
 	"github.com/Jonathansl17/cftun/internal/store"
@@ -49,6 +50,7 @@ type App struct {
 	Checker     routes.Validator
 	Initializer routes.Initializer
 	Teardown    teardown.Procedure
+	Quick       quicktunnel.Runner
 
 	CftunRemoved bool
 }
@@ -71,6 +73,7 @@ func NewApp(configPath string, in io.Reader, out io.Writer) (*App, error) {
 func (a *App) wire(in io.Reader) {
 	a.Store = store.File{Locator: FixedLocator{Path: a.ConfigPath}, Writer: store.ElevatedWriter{Runner: a.Runner}}
 	a.Tunnels = cloudflared.Client{Runner: a.Runner}
+	a.Quick = quicktunnel.Runner{Tunnels: a.Tunnels, Files: a.Files}
 	a.Service = service.Detect(a.Runner, a.Files.Exists, exec.LookPath)
 	a.Installer = installer.Installer{
 		Runner:     a.Runner,

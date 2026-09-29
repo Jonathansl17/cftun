@@ -2,19 +2,13 @@ package cli
 
 import (
 	"context"
-	"fmt"
-	"os"
+	"errors"
 
 	"github.com/spf13/cobra"
 
 	"github.com/Jonathansl17/cftun/internal/ingress"
 	"github.com/Jonathansl17/cftun/internal/msg"
-	"github.com/Jonathansl17/cftun/internal/paths"
-	"github.com/Jonathansl17/cftun/internal/sysexec"
-)
-
-const (
-	emptyConfigContent = "no-autoupdate: true\n"
+	"github.com/Jonathansl17/cftun/internal/quicktunnel"
 )
 
 func newQuickTunnelCmd(a *App) *cobra.Command {
@@ -39,22 +33,10 @@ func runQuickTunnel(ctx context.Context, a *App, port string) error {
 	if err := ensureInstalled(ctx, a, false); err != nil {
 		return err
 	}
-	empty, err := os.CreateTemp("", paths.QuickConfigPattern)
-	if err != nil {
-		return fmt.Errorf("create empty config: %w", err)
-	}
-	defer os.Remove(empty.Name())
-	if _, err := empty.WriteString(emptyConfigContent); err != nil {
-		empty.Close()
-		return fmt.Errorf("write empty config: %w", err)
-	}
-	if err := empty.Close(); err != nil {
-		return fmt.Errorf("close empty config: %w", err)
-	}
 	service := ingress.LocalService(p)
 	a.Printf(msg.InfoQuickStarting, service)
-	err = a.Tunnels.QuickTunnel(ctx, service, empty.Name())
-	if sysexec.Interrupted(err) {
+	err = a.Quick.Run(ctx, service)
+	if errors.Is(err, quicktunnel.ErrInterrupted) {
 		a.Printf(msg.InfoQuickStopped)
 		return nil
 	}
