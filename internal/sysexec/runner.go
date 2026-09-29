@@ -3,41 +3,14 @@ package sysexec
 import (
 	"bytes"
 	"context"
-	"errors"
-	"fmt"
-	"io"
 	"os"
 	"os/exec"
 	"os/signal"
 	"strings"
-	"syscall"
 )
-
-const (
-	elevator            = "sudo"
-	exitCodeInterrupted = 130
-)
-
-type Command struct {
-	Name       string
-	Args       []string
-	Privileged bool
-}
 
 func (c Command) String() string {
-	return strings.Join(append([]string{c.Name}, c.Args...), " ")
-}
-
-type Runner interface {
-	Output(ctx context.Context, cmd Command) (string, error)
-	Stream(ctx context.Context, cmd Command) error
-}
-
-type Shell struct {
-	Stdin  io.Reader
-	Stdout io.Writer
-	Stderr io.Writer
-	IsRoot func() bool
+	return strings.Join(append([]string{c.Name}, c.Args...), commandStringSpacing)
 }
 
 func NewShell() *Shell {
@@ -55,7 +28,7 @@ func (s *Shell) Output(ctx context.Context, cmd Command) (string, error) {
 	c.Stdout = &stdout
 	c.Stderr = &stderr
 	if err := c.Run(); err != nil {
-		return "", fmt.Errorf("%s: %w: %s", cmd, err, strings.TrimSpace(stderr.String()))
+		return "", &CommandError{Command: cmd, Stderr: strings.TrimSpace(stderr.String()), Err: err}
 	}
 	return stdout.String(), nil
 }
@@ -67,7 +40,7 @@ func (s *Shell) Stream(ctx context.Context, cmd Command) error {
 	signal.Notify(interrupts, os.Interrupt)
 	defer signal.Stop(interrupts)
 	if err := c.Run(); err != nil {
-		return fmt.Errorf("%s: %w", cmd, err)
+		return &CommandError{Command: cmd, Err: err}
 	}
 	return nil
 }
@@ -82,13 +55,4 @@ func (s *Shell) resolve(cmd Command) Command {
 		return cmd
 	}
 	return Command{Name: elevator, Args: append([]string{cmd.Name}, cmd.Args...)}
-}
-
-func Interrupted(err error) bool {
-	var exit *exec.ExitError
-	if !errors.As(err, &exit) {
-		return false
-	}
-	status, ok := exit.Sys().(syscall.WaitStatus)
-	return ok && (status.Signaled() && status.Signal() == syscall.SIGINT || status.ExitStatus() == exitCodeInterrupted)
 }

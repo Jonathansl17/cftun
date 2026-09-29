@@ -10,21 +10,6 @@ import (
 	"github.com/Jonathansl17/cftun/internal/sysexec"
 )
 
-const (
-	filePerm        = 0o644
-	filePermOctal   = "0644"
-	installBinary   = "install"
-	tempFilePattern = "cftun-*"
-)
-
-type Writer interface {
-	WriteFile(ctx context.Context, path string, data []byte) error
-}
-
-type ElevatedWriter struct {
-	Runner sysexec.Runner
-}
-
 func (w ElevatedWriter) WriteFile(ctx context.Context, path string, data []byte) error {
 	err := os.WriteFile(path, data, filePerm)
 	if err == nil {
@@ -34,6 +19,21 @@ func (w ElevatedWriter) WriteFile(ctx context.Context, path string, data []byte)
 		return fmt.Errorf("write %s: %w", path, err)
 	}
 	return w.writeElevated(ctx, path, data)
+}
+
+func (w ElevatedWriter) RemoveFile(ctx context.Context, path string) error {
+	err := os.Remove(path)
+	if err == nil || errors.Is(err, fs.ErrNotExist) {
+		return nil
+	}
+	if !errors.Is(err, fs.ErrPermission) {
+		return fmt.Errorf("remove %s: %w", path, err)
+	}
+	return w.Runner.Stream(ctx, sysexec.Command{
+		Name:       removeBinary,
+		Args:       []string{removeForce, endOfOptions, path},
+		Privileged: true,
+	})
 }
 
 func (w ElevatedWriter) writeElevated(ctx context.Context, path string, data []byte) error {
@@ -51,7 +51,7 @@ func (w ElevatedWriter) writeElevated(ctx context.Context, path string, data []b
 	}
 	return w.Runner.Stream(ctx, sysexec.Command{
 		Name:       installBinary,
-		Args:       []string{"-D", "-m", filePermOctal, tmp.Name(), path},
+		Args:       []string{installDirs, installMode, fmt.Sprintf(fileModeFormat, filePerm), tmp.Name(), path},
 		Privileged: true,
 	})
 }

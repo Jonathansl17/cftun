@@ -7,34 +7,30 @@ import (
 	"io/fs"
 	"os"
 
+	"github.com/Jonathansl17/cftun/internal/apperr"
+	"github.com/Jonathansl17/cftun/internal/hostfs"
 	"github.com/Jonathansl17/cftun/internal/ingress"
 )
 
-const backupSuffix = ".bak"
-
-var ErrMissing = errors.New("config file not found, run `cftun init` first")
-
-type File struct {
-	Path   string
-	Writer Writer
-}
-
-func (f File) Exists() bool {
-	_, err := os.Stat(f.Path)
-	return err == nil
+func (f File) Path() string {
+	return f.Locator.ConfigPath()
 }
 
 func (f File) BackupPath() string {
-	return f.Path + backupSuffix
+	return f.Path() + backupSuffix
+}
+
+func (f File) Exists() bool {
+	return hostfs.FS{}.Exists(f.Path())
 }
 
 func (f File) Load() (*ingress.Document, error) {
-	data, err := os.ReadFile(f.Path)
+	data, err := os.ReadFile(f.Path())
 	if errors.Is(err, fs.ErrNotExist) {
-		return nil, fmt.Errorf("%s: %w", f.Path, ErrMissing)
+		return nil, apperr.Wrap(f.Path(), ErrMissing)
 	}
 	if err != nil {
-		return nil, fmt.Errorf("read %s: %w", f.Path, err)
+		return nil, fmt.Errorf("read %s: %w", f.Path(), err)
 	}
 	return ingress.Parse(data)
 }
@@ -47,7 +43,7 @@ func (f File) Save(ctx context.Context, doc *ingress.Document) error {
 	if err := f.backup(ctx); err != nil {
 		return err
 	}
-	return f.Writer.WriteFile(ctx, f.Path, data)
+	return f.Writer.WriteFile(ctx, f.Path(), data)
 }
 
 func (f File) Restore(ctx context.Context) error {
@@ -55,16 +51,20 @@ func (f File) Restore(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("read backup: %w", err)
 	}
-	return f.Writer.WriteFile(ctx, f.Path, data)
+	return f.Writer.WriteFile(ctx, f.Path(), data)
+}
+
+func (f File) Delete(ctx context.Context) error {
+	return f.Writer.RemoveFile(ctx, f.Path())
 }
 
 func (f File) backup(ctx context.Context) error {
-	data, err := os.ReadFile(f.Path)
+	data, err := os.ReadFile(f.Path())
 	if errors.Is(err, fs.ErrNotExist) {
 		return nil
 	}
 	if err != nil {
-		return fmt.Errorf("read %s: %w", f.Path, err)
+		return fmt.Errorf("read %s: %w", f.Path(), err)
 	}
 	return f.Writer.WriteFile(ctx, f.BackupPath(), data)
 }

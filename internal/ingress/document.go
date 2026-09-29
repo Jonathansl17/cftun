@@ -2,28 +2,10 @@ package ingress
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 
 	"gopkg.in/yaml.v3"
 )
-
-const (
-	keyTunnel      = "tunnel"
-	keyCredentials = "credentials-file"
-	keyIngress     = "ingress"
-	keyHostname    = "hostname"
-	keyService     = "service"
-	yamlIndent     = 2
-
-	CatchAllService = "http_status:404"
-)
-
-var ErrMalformed = errors.New("config must be a mapping with an ingress list")
-
-type Document struct {
-	doc *yaml.Node
-}
 
 func Parse(data []byte) (*Document, error) {
 	var n yaml.Node

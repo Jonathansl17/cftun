@@ -15,7 +15,9 @@ import (
 	"github.com/Jonathansl17/cftun/internal/cloudflared"
 	"github.com/Jonathansl17/cftun/internal/dnsapi"
 	"github.com/Jonathansl17/cftun/internal/health"
+	"github.com/Jonathansl17/cftun/internal/hostfs"
 	"github.com/Jonathansl17/cftun/internal/installer"
+	"github.com/Jonathansl17/cftun/internal/paths"
 	"github.com/Jonathansl17/cftun/internal/prompt"
 	"github.com/Jonathansl17/cftun/internal/routes"
 	"github.com/Jonathansl17/cftun/internal/service"
@@ -24,16 +26,16 @@ import (
 )
 
 const (
-	DefaultConfigPath = "/etc/cloudflared/config.yml"
-	ConfigPathEnv     = "CFTUN_CONFIG"
-	apiTimeout        = 15 * time.Second
-	probeTimeout      = 5 * time.Second
-	downloadTimeout   = 5 * time.Minute
+	ConfigPathEnv   = "CFTUN_CONFIG"
+	apiTimeout      = 15 * time.Second
+	probeTimeout    = 5 * time.Second
+	downloadTimeout = 5 * time.Minute
 )
 
 type App struct {
 	Out        io.Writer
 	Home       string
+	Files      hostfs.FS
 	ConfigPath string
 	Runner     sysexec.Runner
 	Store      store.File
@@ -48,9 +50,10 @@ type App struct {
 }
 
 func NewApp(configPath string, in io.Reader, out io.Writer) (*App, error) {
-	home, err := os.UserHomeDir()
+	files := hostfs.FS{}
+	home, err := files.Home()
 	if err != nil {
-		return nil, fmt.Errorf("locate home: %w", err)
+		return nil, err
 	}
 	tokens, err := dnsapi.NewTokenStore()
 	if err != nil {
@@ -64,15 +67,15 @@ func NewApp(configPath string, in io.Reader, out io.Writer) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	a := &App{Out: out, Home: home, ConfigPath: configPath, Runner: sysexec.NewShell(), Tokens: tokens}
+	a := &App{Out: out, Home: home, Files: files, ConfigPath: configPath, Runner: sysexec.NewShell(), Tokens: tokens}
 	a.wire(family, token, in)
 	return a, nil
 }
 
 func (a *App) wire(family installer.Family, token string, in io.Reader) {
-	a.Store = store.File{Path: a.ConfigPath, Writer: store.ElevatedWriter{Runner: a.Runner}}
+	a.Store = store.File{Locator: FixedLocator{Path: a.ConfigPath}, Writer: store.ElevatedWriter{Runner: a.Runner}}
 	a.Tunnels = cloudflared.Client{Runner: a.Runner}
-	a.Service = service.Detect(a.Runner, fileExists, exec.LookPath)
+	a.Service = service.Detect(a.Runner, a.Files.Exists, exec.LookPath)
 	a.Installer = installer.Installer{
 		Runner:     a.Runner,
 		Downloader: installer.HTTPDownloader{Client: &http.Client{Timeout: downloadTimeout}},
@@ -93,7 +96,7 @@ func (a *App) Printf(format string, args ...any) {
 }
 
 func (a *App) UserCloudflaredDir() string {
-	return filepath.Join(a.Home, cloudflared.HomeDir)
+	return filepath.Join(a.Home, paths.UserDirName)
 }
 
 func detectFamily() (installer.Family, error) {
@@ -108,11 +111,6 @@ func detectFamily() (installer.Family, error) {
 	return installer.DetectFamily(f)
 }
 
-func fileExists(path string) bool {
-	_, err := os.Stat(path)
-	return err == nil
-}
-
 func ResolveConfigPath(flag string) string {
 	if flag != "" {
 		return flag
@@ -120,5 +118,5 @@ func ResolveConfigPath(flag string) string {
 	if env := os.Getenv(ConfigPathEnv); env != "" {
 		return env
 	}
-	return DefaultConfigPath
+	return paths.DefaultConfig
 }

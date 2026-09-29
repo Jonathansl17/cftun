@@ -1,22 +1,12 @@
 package ingress
 
 import (
-	"errors"
-	"fmt"
 	"strings"
 
 	"gopkg.in/yaml.v3"
-)
 
-var (
-	ErrDuplicate = errors.New("hostname already has a rule")
-	ErrNotFound  = errors.New("hostname has no rule")
+	"github.com/Jonathansl17/cftun/internal/apperr"
 )
-
-type Rule struct {
-	Hostname string
-	Service  string
-}
 
 func (d *Document) Rules() []Rule {
 	var rules []Rule
@@ -30,7 +20,7 @@ func (d *Document) Rules() []Rule {
 
 func (d *Document) Add(r Rule) error {
 	if d.node(r.Hostname) != nil {
-		return fmt.Errorf("%s: %w", r.Hostname, ErrDuplicate)
+		return apperr.Wrap(r.Hostname, ErrDuplicate)
 	}
 	d.ensureCatchAll()
 	list := d.list()
@@ -48,16 +38,16 @@ func (d *Document) Remove(host string) error {
 			return nil
 		}
 	}
-	return fmt.Errorf("%s: %w", host, ErrNotFound)
+	return apperr.Wrap(host, ErrNotFound)
 }
 
 func (d *Document) Update(host string, r Rule) error {
 	n := d.node(host)
 	if n == nil {
-		return fmt.Errorf("%s: %w", host, ErrNotFound)
+		return apperr.Wrap(host, ErrNotFound)
 	}
 	if !sameHost(host, r.Hostname) && d.node(r.Hostname) != nil {
-		return fmt.Errorf("%s: %w", r.Hostname, ErrDuplicate)
+		return apperr.Wrap(r.Hostname, ErrDuplicate)
 	}
 	setScalar(n, keyHostname, r.Hostname)
 	setScalar(n, keyService, r.Service)

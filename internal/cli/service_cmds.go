@@ -34,7 +34,7 @@ func installService(cmd *cobra.Command, a *App) error {
 	if !a.Store.Exists() {
 		return errConfigMissing(a)
 	}
-	if service.Installed(fileExists) {
+	if service.Installed(a.Files.Exists) {
 		a.Printf(msg.InfoServiceExists)
 	} else if err := a.Tunnels.InstallService(cmd.Context()); err != nil {
 		return err

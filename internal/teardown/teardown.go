@@ -13,18 +13,6 @@ import (
 	"github.com/Jonathansl17/cftun/internal/sysexec"
 )
 
-var systemPaths = []string{
-	"/etc/cloudflared",
-	"/usr/local/etc/cloudflared",
-	"/root/" + cloudflared.HomeDir,
-	"/var/log/cloudflared.log",
-	"/var/log/cloudflared.err",
-	"/etc/systemd/system/cloudflared.service",
-	"/etc/systemd/system/cloudflared-update.service",
-	"/etc/systemd/system/cloudflared-update.timer",
-	"/etc/init.d/cloudflared",
-}
-
 type Steps struct {
 	Runner    sysexec.Runner
 	Load      func() (*ingress.Document, error)

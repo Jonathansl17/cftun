@@ -3,7 +3,7 @@ package ingress
 import "gopkg.in/yaml.v3"
 
 func lookup(mapping *yaml.Node, key string) *yaml.Node {
-	for i := 0; i+1 < len(mapping.Content); i += 2 {
+	for i := 0; i+1 < len(mapping.Content); i += pairStride {
 		if mapping.Content[i].Value == key {
 			return mapping.Content[i+1]
 		}
@@ -41,7 +41,7 @@ func newScalar(value string) *yaml.Node {
 
 func newMapping(pairs ...string) *yaml.Node {
 	m := &yaml.Node{Kind: yaml.MappingNode}
-	for i := 0; i+1 < len(pairs); i += 2 {
+	for i := 0; i+1 < len(pairs); i += pairStride {
 		setScalar(m, pairs[i], pairs[i+1])
 	}
 	return m

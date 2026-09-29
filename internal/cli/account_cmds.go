@@ -1,14 +1,13 @@
 package cli
 
 import (
-	"os"
 	"path/filepath"
 
 	"github.com/spf13/cobra"
 
-	"github.com/Jonathansl17/cftun/internal/cloudflared"
 	"github.com/Jonathansl17/cftun/internal/dnsapi"
 	"github.com/Jonathansl17/cftun/internal/msg"
+	"github.com/Jonathansl17/cftun/internal/paths"
 )
 
 func newLoginCmd(a *App) *cobra.Command {
@@ -27,12 +26,11 @@ func newLoginCmd(a *App) *cobra.Command {
 }
 
 func certPath(a *App) string {
-	return filepath.Join(a.UserCloudflaredDir(), cloudflared.CertFile)
+	return filepath.Join(a.UserCloudflaredDir(), paths.CertFile)
 }
 
 func loggedIn(a *App) bool {
-	_, err := os.Stat(certPath(a))
-	return err == nil
+	return a.Files.Exists(certPath(a))
 }
 
 func newTokenCmd(a *App) *cobra.Command {

@@ -77,7 +77,7 @@ func uninstall(ctx context.Context, a *App) error {
 		Service:           a.Service,
 		Uninstall:         a.Installer.Uninstall,
 		Installed:         func(ctx context.Context) bool { _, err := a.Tunnels.Version(ctx); return err == nil },
-		ServiceRegistered: func() bool { return service.Installed(fileExists) },
+		ServiceRegistered: func() bool { return service.Installed(a.Files.Exists) },
 		Report:            a,
 		Paths:             []string{a.ConfigPath, a.Store.BackupPath(), a.UserCloudflaredDir()},
 	}
