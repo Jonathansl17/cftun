@@ -75,6 +75,7 @@ func (a *App) wire(token string, in io.Reader) {
 	a.Installer = installer.Installer{
 		Runner:     a.Runner,
 		Downloader: installer.HTTPDownloader{Client: &http.Client{Timeout: downloadTimeout}},
+		Releases:   installer.GitHubReleases{Client: &http.Client{Timeout: apiTimeout}},
 		Families:   installer.OSReleaseSource{},
 		GoArch:     runtime.GOARCH,
 	}

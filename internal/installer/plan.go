@@ -14,14 +14,14 @@ func planFor(f Family) plan {
 	return binaryPlan
 }
 
-func (p plan) assetURL(goarch string) (string, error) {
+func (p plan) assetName(goarch string) (string, error) {
 	if p.assetFormat == "" {
 		return "", nil
 	}
 	if !slices.Contains(supportedArches, goarch) {
 		return "", fmt.Errorf(unsupportedArchFormat, ErrUnsupportedArch, goarch)
 	}
-	return releaseBaseURL + fmt.Sprintf(p.assetFormat, p.archName(goarch)), nil
+	return fmt.Sprintf(p.assetFormat, p.archName(goarch)), nil
 }
 
 func (p plan) archName(goarch string) string {
