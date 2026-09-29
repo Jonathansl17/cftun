@@ -4,6 +4,7 @@
 # Environment:
 #   CFTUN_VERSION      release tag to install (default: latest)
 #   CFTUN_INSTALL_DIR  target directory (default: /usr/local/bin)
+#   CFTUN_SKIP_CLOUDFLARED=1  do not install cloudflared
 set -euo pipefail
 
 readonly REPO="Jonathansl17/cftun"
@@ -11,6 +12,7 @@ readonly BIN_NAME="cftun"
 readonly CHECKSUMS="checksums.txt"
 readonly VERSION="${CFTUN_VERSION:-latest}"
 readonly INSTALL_DIR="${CFTUN_INSTALL_DIR:-/usr/local/bin}"
+readonly SKIP_CLOUDFLARED="${CFTUN_SKIP_CLOUDFLARED:-0}"
 readonly COMPLETIONS=(
   "bash:/usr/share/bash-completion/completions/${BIN_NAME}"
   "zsh:/usr/share/zsh/site-functions/_${BIN_NAME}"
@@ -107,6 +109,9 @@ main() {
   dest="$(install_binary "${TMP_DIR}/${asset}")"
   printf 'Installed %s\n' "$("$dest" --version)"
   install_completions "$dest"
+  if [[ "$SKIP_CLOUDFLARED" != "1" ]]; then
+    "$dest" install </dev/null
+  fi
   printf 'Open a new terminal to get tab completion.\n'
   printf 'Next step: run "%s setup"\n' "$BIN_NAME"
 }

@@ -36,6 +36,9 @@ downloads the matching binary from the
 SHA-256 checksum and installs it to `/usr/local/bin/cftun` (using sudo when
 needed). It needs `curl` or `wget` and nothing else: no Go, no runtime.
 
+Then it installs cloudflared with the native method of your distribution
+(`cftun install`), since every other command depends on it.
+
 It also installs tab completion for every shell present: bash
 (`/usr/share/bash-completion/completions/cftun`, needs the `bash-completion`
 package), zsh and fish. Open a new terminal after installing. For another
@@ -45,6 +48,7 @@ location, generate the script yourself with `cftun completion bash|zsh|fish`.
 |---|---|---|
 | `CFTUN_VERSION` | `latest` | Release tag to install |
 | `CFTUN_INSTALL_DIR` | `/usr/local/bin` | Target directory |
+| `CFTUN_SKIP_CLOUDFLARED` | `0` | Set to `1` to skip installing cloudflared |
 
 Re-run the installer to update. See [Uninstall](#uninstall) to remove it.
 
