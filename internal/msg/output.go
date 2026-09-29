@@ -6,8 +6,6 @@ const (
 	PromptFormat              = "%s: "
 	OptionFormat              = "  %d) %s\n"
 	ConfirmFormat             = "%s [y/N]: "
-	AnswerYes                 = "y"
-	AnswerYesLong             = "yes"
 	PromptChoice              = "Choose an option"
 	PromptHostname            = "Public hostname (e.g. api.example.com)"
 	PromptPort                = "Local port"
@@ -92,9 +90,4 @@ const (
 	StatusDown       = "DOWN"
 	StatusOKFormat   = "OK (%d)"
 	StatusFailFormat = "FAIL (%d)"
-
-	HintConnectionRefused = "nothing listens on that port; start your app"
-	HintDNS1016           = "error 1016: DNS does not point to the tunnel; remove and add the route again"
-	HintTunnelDown        = "the tunnel cannot reach the app; check the port and \"cftun service status\""
-	HintGeneric           = "unexpected answer; check \"cftun service logs\""
 )

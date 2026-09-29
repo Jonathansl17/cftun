@@ -26,7 +26,7 @@ type Service interface {
 }
 
 type DNS interface {
-	Configured() bool
+	Configured() (bool, error)
 	DeleteCNAME(ctx context.Context, hostname string) (int, error)
 }
 

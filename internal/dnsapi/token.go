@@ -10,24 +10,16 @@ import (
 	"syscall"
 )
 
-const (
-	tokenDir      = "cftun"
-	tokenFile     = "token"
-	tokenFilePerm = 0o600
-	tokenDirPerm  = 0o700
-)
-
-type TokenStore struct {
-	Path string
-	Env  func(string) string
-}
-
 func NewTokenStore() (TokenStore, error) {
 	dir, err := os.UserConfigDir()
 	if err != nil {
 		return TokenStore{}, fmt.Errorf("locate config dir: %w", err)
 	}
 	return TokenStore{Path: filepath.Join(dir, tokenDir, tokenFile), Env: os.Getenv}, nil
+}
+
+func (s TokenStore) Location() string {
+	return s.Path
 }
 
 func (s TokenStore) Load() (string, error) {
@@ -50,6 +42,9 @@ func (s TokenStore) Save(token string) error {
 	}
 	if err := os.WriteFile(s.Path, []byte(token), tokenFilePerm); err != nil {
 		return fmt.Errorf("write token: %w", err)
+	}
+	if err := os.Chmod(s.Path, tokenFilePerm); err != nil {
+		return fmt.Errorf("restrict token file: %w", err)
 	}
 	return nil
 }

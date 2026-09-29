@@ -79,8 +79,8 @@ func checkRule(ctx context.Context, a *App, r ingress.Rule) {
 		a.Health.Probe(ctx, health.PublicURL(r.Hostname)),
 	} {
 		a.Printf(msg.CheckLine, res.URL, statusLabel(res))
-		if hint := res.Hint(); hint != "" {
-			a.Printf(msg.CheckHint, hint)
+		if hint := res.Hint(); hint != health.HintNone {
+			a.Printf(msg.CheckHint, hintTexts[hint])
 		}
 	}
 }

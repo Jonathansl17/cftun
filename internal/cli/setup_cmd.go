@@ -84,7 +84,11 @@ func ensureTunnelConfig(ctx context.Context, a *App) error {
 }
 
 func offerToken(a *App) error {
-	if a.DNS.Configured() {
+	configured, err := a.DNS.Configured()
+	if err != nil {
+		return err
+	}
+	if configured {
 		a.Printf(msg.InfoTokenSet)
 		return nil
 	}

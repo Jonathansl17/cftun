@@ -46,7 +46,6 @@ func newTokenCmd(a *App) *cobra.Command {
 			Use:   "clear",
 			Short: msg.TokenClearShort,
 			RunE: func(*cobra.Command, []string) error {
-				a.setToken("")
 				return a.Tokens.Clear()
 			},
 		},
@@ -54,7 +53,11 @@ func newTokenCmd(a *App) *cobra.Command {
 			Use:   "status",
 			Short: msg.TokenStatusShort,
 			RunE: func(*cobra.Command, []string) error {
-				if a.DNS.Configured() {
+				configured, err := a.DNS.Configured()
+				if err != nil {
+					return err
+				}
+				if configured {
 					a.Printf(msg.InfoTokenSet)
 				} else {
 					a.Printf(msg.InfoTokenMissing, dnsapi.TokenEnv)
@@ -74,12 +77,6 @@ func setToken(a *App, value string) error {
 	if err := a.Tokens.Save(token); err != nil {
 		return err
 	}
-	a.setToken(token)
-	a.Printf(msg.InfoTokenSaved, a.Tokens.Path)
+	a.Printf(msg.InfoTokenSaved, a.Tokens.Location())
 	return nil
-}
-
-func (a *App) setToken(token string) {
-	a.DNS.Token = token
-	a.Routes.DNS = a.DNS
 }

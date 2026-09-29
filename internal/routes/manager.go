@@ -69,7 +69,11 @@ func (m Manager) Edit(ctx context.Context, host string, rule ingress.Rule, opts 
 }
 
 func (m Manager) DeleteDNS(ctx context.Context, host string) error {
-	if !m.DNS.Configured() {
+	configured, err := m.DNS.Configured()
+	if err != nil {
+		return err
+	}
+	if !configured {
 		m.Report.Printf(msg.WarnManualDNS, host)
 		return nil
 	}

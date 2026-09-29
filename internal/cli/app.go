@@ -59,16 +59,12 @@ func NewApp(configPath string, in io.Reader, out io.Writer) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
-	token, err := tokens.Load()
-	if err != nil {
-		return nil, err
-	}
 	a := &App{Out: out, Home: home, Files: files, ConfigPath: configPath, Runner: sysexec.NewShell(), Tokens: tokens}
-	a.wire(token, in)
+	a.wire(in)
 	return a, nil
 }
 
-func (a *App) wire(token string, in io.Reader) {
+func (a *App) wire(in io.Reader) {
 	a.Store = store.File{Locator: FixedLocator{Path: a.ConfigPath}, Writer: store.ElevatedWriter{Runner: a.Runner}}
 	a.Tunnels = cloudflared.Client{Runner: a.Runner}
 	a.Service = service.Detect(a.Runner, a.Files.Exists, exec.LookPath)
@@ -79,9 +75,9 @@ func (a *App) wire(token string, in io.Reader) {
 		Families:   installer.OSReleaseSource{},
 		GoArch:     runtime.GOARCH,
 	}
-	a.DNS = dnsapi.Client{HTTP: &http.Client{Timeout: apiTimeout}, BaseURL: dnsapi.DefaultBaseURL, Token: token}
+	a.DNS = dnsapi.Client{HTTP: &http.Client{Timeout: apiTimeout}, BaseURL: dnsapi.DefaultBaseURL, Tokens: a.Tokens}
 	a.Health = health.Checker{HTTP: &http.Client{Timeout: probeTimeout}}
-	a.Prompt = prompt.NewConsole(in, a.Out)
+	a.Prompt = prompt.NewConsole(in, a.Out, promptTexts())
 	a.Routes = routes.Manager{
 		ConfigPath: a.ConfigPath, Store: a.Store, Tunnels: a.Tunnels,
 		Service: a.Service, DNS: a.DNS, Report: a,
