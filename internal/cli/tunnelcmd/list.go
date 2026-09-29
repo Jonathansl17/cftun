@@ -13,7 +13,7 @@ func (g *Group) listCmd() *cobra.Command {
 		Short: msg.TunnelListShort,
 		RunE:  g.list,
 	}
-	return mark(cmd, msg.MenuTunnelList, orderList)
+	return uikit.MarkIn(uikit.GroupTunnels, cmd, msg.MenuTunnelList, orderList)
 }
 
 func (g *Group) list(cmd *cobra.Command, _ []string) error {

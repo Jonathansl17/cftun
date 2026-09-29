@@ -13,7 +13,7 @@ func (g *Group) validateCmd() *cobra.Command {
 		Short: msg.ValidateShort,
 		RunE:  g.validate,
 	}
-	return mark(uikit.RequireCloudflared(cmd), msg.MenuValidate, orderValidate)
+	return uikit.MarkIn(uikit.GroupRoutes, uikit.RequireCloudflared(cmd), msg.MenuValidate, orderValidate)
 }
 
 func (g *Group) validate(cmd *cobra.Command, _ []string) error {

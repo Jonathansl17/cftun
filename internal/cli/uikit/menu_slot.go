@@ -14,6 +14,10 @@ func MarkMenu(cmd *cobra.Command, slot MenuSlot) *cobra.Command {
 	return cmd
 }
 
+func MarkIn(group MenuGroup, cmd *cobra.Command, label string, order int) *cobra.Command {
+	return MarkMenu(cmd, MenuSlot{Group: group, Label: label, Order: order})
+}
+
 func SlotOf(cmd *cobra.Command) (MenuSlot, bool, error) {
 	label, marked := cmd.Annotations[annotationMenuLabel]
 	if !marked {

@@ -15,8 +15,6 @@ const (
 	shortYes      = "y"
 	flagKeepCftun = "keep-cftun"
 
-	orderInstall = 1
-
 	resolveFormat     = "resolve path: %w"
 	stepTextFormat    = "%s: %s"
 	stepSubjectFormat = "%s %s"

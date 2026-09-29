@@ -21,7 +21,7 @@ func (g *Group) Commands() []*cobra.Command {
 			return g.Run(cmd.Context(), port)
 		},
 	}
-	cmd.Flags().StringVar(&port, flagPort, noDefault, msg.FlagPort)
+	cmd.Flags().StringVar(&port, flagPort, uikit.NoDefault, msg.FlagPort)
 	slot := uikit.MenuSlot{Group: uikit.GroupNone, Label: msg.MenuQuick, Order: uikit.OrderQuick}
 	return []*cobra.Command{uikit.MarkMenu(cmd, slot)}
 }

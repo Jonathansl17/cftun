@@ -22,7 +22,7 @@ func (g *Group) addCmd() *cobra.Command {
 	bindHost(cmd, &flags)
 	bindPort(cmd, &flags)
 	bindOptions(cmd, &flags)
-	return mark(uikit.RequireCloudflared(cmd), msg.MenuAdd, orderAdd)
+	return uikit.MarkIn(uikit.GroupRoutes, uikit.RequireCloudflared(cmd), msg.MenuAdd, orderAdd)
 }
 
 func (g *Group) addRoute(ctx context.Context, flags routeFlags) error {

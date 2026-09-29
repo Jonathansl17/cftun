@@ -19,8 +19,7 @@ const (
 	flagNoDNS     = "no-dns"
 	flagNoRestart = "no-restart"
 
-	noDefault = ""
-	noLabel   = ""
+	noLabel = ""
 
 	orderList     = 1
 	orderAdd      = 2

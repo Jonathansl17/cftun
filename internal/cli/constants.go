@@ -11,7 +11,6 @@ const (
 	binaryName    = "cftun"
 	flagConfig    = "config"
 	configPathEnv = "CFTUN_CONFIG"
-	noDefault     = ""
 
 	exitOK      = 0
 	exitFailure = 1

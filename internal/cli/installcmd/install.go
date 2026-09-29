@@ -19,7 +19,7 @@ func (g *Group) installCmd() *cobra.Command {
 		},
 	}
 	cmd.Flags().BoolVar(&force, flagForce, false, msg.FlagForceInstall)
-	slot := uikit.MenuSlot{Group: uikit.GroupAccount, Label: msg.MenuInstall, Order: orderInstall}
+	slot := uikit.MenuSlot{Group: uikit.GroupAccount, Label: msg.MenuInstall, Order: uikit.OrderAccountInstall}
 	return uikit.MarkMenu(cmd, slot)
 }
 

@@ -3,6 +3,7 @@ package authcmd
 import (
 	"github.com/spf13/cobra"
 
+	"github.com/Jonathansl17/cftun/internal/cli/uikit"
 	"github.com/Jonathansl17/cftun/internal/dnsapi"
 	"github.com/Jonathansl17/cftun/internal/msg"
 )
@@ -21,7 +22,7 @@ func (g *Group) tokenClearCmd() *cobra.Command {
 			return g.deps.Tokens.Clear()
 		},
 	}
-	return mark(cmd, msg.MenuTokenClear, orderTokenClear)
+	return uikit.MarkIn(uikit.GroupAccount, cmd, msg.MenuTokenClear, uikit.OrderAccountTokenClear)
 }
 
 func (g *Group) tokenStatusCmd() *cobra.Command {
@@ -30,7 +31,7 @@ func (g *Group) tokenStatusCmd() *cobra.Command {
 		Short: msg.TokenStatusShort,
 		RunE:  g.tokenStatus,
 	}
-	return mark(cmd, msg.MenuTokenStatus, orderTokenStatus)
+	return uikit.MarkIn(uikit.GroupAccount, cmd, msg.MenuTokenStatus, uikit.OrderAccountTokenStatus)
 }
 
 func (g *Group) tokenStatus(*cobra.Command, []string) error {

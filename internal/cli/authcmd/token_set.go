@@ -15,7 +15,7 @@ func (g *Group) tokenSetCmd() *cobra.Command {
 		Args:  cobra.NoArgs,
 		RunE:  func(*cobra.Command, []string) error { return g.saveToken() },
 	}
-	return mark(cmd, msg.MenuTokenSet, orderTokenSet)
+	return uikit.MarkIn(uikit.GroupAccount, cmd, msg.MenuTokenSet, uikit.OrderAccountTokenSet)
 }
 
 func (g *Group) saveToken() error {

@@ -3,6 +3,7 @@ package cli
 import (
 	"github.com/spf13/cobra"
 
+	"github.com/Jonathansl17/cftun/internal/cli/uikit"
 	"github.com/Jonathansl17/cftun/internal/msg"
 )
 
@@ -27,7 +28,7 @@ func NewRoot(version string, streams Streams) (*cobra.Command, error) {
 		},
 		RunE: func(cmd *cobra.Command, _ []string) error { return m.run(cmd.Root()) },
 	}
-	root.PersistentFlags().StringVar(&locator.Flag, flagConfig, noDefault, msg.FlagConfig)
+	root.PersistentFlags().StringVar(&locator.Flag, flagConfig, uikit.NoDefault, msg.FlagConfig)
 	root.SetOut(streams.Out)
 	root.AddCommand(g.commands()...)
 	return root, nil

@@ -5,6 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/Jonathansl17/cftun/internal/cli/uikit"
 	"github.com/Jonathansl17/cftun/internal/health"
 	"github.com/Jonathansl17/cftun/internal/ingress"
 	"github.com/Jonathansl17/cftun/internal/msg"
@@ -16,7 +17,7 @@ func (g *Group) checkCmd() *cobra.Command {
 		Short: msg.CheckShort,
 		RunE:  g.check,
 	}
-	return mark(cmd, msg.MenuCheck, orderCheck)
+	return uikit.MarkIn(uikit.GroupRoutes, cmd, msg.MenuCheck, orderCheck)
 }
 
 func (g *Group) check(cmd *cobra.Command, _ []string) error {

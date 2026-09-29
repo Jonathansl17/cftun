@@ -14,7 +14,7 @@ func (g *Group) createCmd() *cobra.Command {
 		Args:  cobra.MaximumNArgs(maxNameArgs),
 		RunE:  g.create,
 	}
-	return mark(cmd, msg.MenuTunnelCreate, orderCreate)
+	return uikit.MarkIn(uikit.GroupTunnels, cmd, msg.MenuTunnelCreate, orderCreate)
 }
 
 func (g *Group) create(cmd *cobra.Command, args []string) error {

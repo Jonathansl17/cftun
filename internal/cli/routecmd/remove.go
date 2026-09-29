@@ -19,7 +19,7 @@ func (g *Group) removeCmd() *cobra.Command {
 	}
 	bindHost(cmd, &flags)
 	bindOptions(cmd, &flags)
-	return mark(uikit.RequireCloudflared(cmd), msg.MenuRemove, orderRemove)
+	return uikit.MarkIn(uikit.GroupRoutes, uikit.RequireCloudflared(cmd), msg.MenuRemove, orderRemove)
 }
 
 func (g *Group) removeRoute(cmd *cobra.Command, flags routeFlags) error {

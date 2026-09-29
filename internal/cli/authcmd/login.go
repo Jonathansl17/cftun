@@ -19,7 +19,7 @@ func (g *Group) loginCmd() *cobra.Command {
 			return g.EnsureLogin(cmd.Context())
 		},
 	}
-	return mark(uikit.RequireCloudflared(cmd), msg.MenuLogin, orderLogin)
+	return uikit.MarkIn(uikit.GroupAccount, uikit.RequireCloudflared(cmd), msg.MenuLogin, uikit.OrderAccountLogin)
 }
 
 func (g *Group) EnsureLogin(ctx context.Context) error {

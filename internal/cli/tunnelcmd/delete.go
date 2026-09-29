@@ -17,7 +17,7 @@ func (g *Group) deleteCmd() *cobra.Command {
 		Args:  cobra.MaximumNArgs(maxNameArgs),
 		RunE:  g.delete,
 	}
-	return mark(cmd, msg.MenuTunnelDelete, orderDelete)
+	return uikit.MarkIn(uikit.GroupTunnels, cmd, msg.MenuTunnelDelete, orderDelete)
 }
 
 func (g *Group) delete(cmd *cobra.Command, args []string) error {

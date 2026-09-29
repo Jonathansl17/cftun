@@ -11,7 +11,6 @@ const (
 	flagForce  = "force"
 
 	maxNameArgs = 1
-	noDefault   = ""
 
 	orderList   = 1
 	orderCreate = 2

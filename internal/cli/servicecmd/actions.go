@@ -3,6 +3,7 @@ package servicecmd
 import (
 	"github.com/spf13/cobra"
 
+	"github.com/Jonathansl17/cftun/internal/cli/uikit"
 	"github.com/Jonathansl17/cftun/internal/msg"
 	"github.com/Jonathansl17/cftun/internal/service"
 )
@@ -23,5 +24,5 @@ func (g *Group) actionCmd(action service.Action) *cobra.Command {
 			return g.deps.Actions.Run(cmd.Context(), action)
 		},
 	}
-	return mark(cmd, msg.MenuServiceLabel[action], actionOrder[action])
+	return uikit.MarkIn(uikit.GroupService, cmd, msg.MenuServiceLabel[action], actionOrder[action])
 }

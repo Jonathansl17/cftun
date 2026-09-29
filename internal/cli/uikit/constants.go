@@ -22,6 +22,14 @@ const (
 	OrderAccount   = 60
 	OrderUninstall = 70
 
+	OrderAccountInstall     = 1
+	OrderAccountLogin       = 2
+	OrderAccountTokenSet    = 3
+	OrderAccountTokenStatus = 4
+	OrderAccountTokenClear  = 5
+
+	NoDefault = ""
+
 	slotErrorFormat = "menu slot of %s: %w"
 
 	tableMinWidth = 0

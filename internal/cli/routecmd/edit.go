@@ -17,10 +17,10 @@ func (g *Group) editCmd() *cobra.Command {
 		},
 	}
 	bindHost(cmd, &flags)
-	cmd.Flags().StringVar(&flags.NewHost, flagNewHost, noDefault, msg.FlagNewHost)
+	cmd.Flags().StringVar(&flags.NewHost, flagNewHost, uikit.NoDefault, msg.FlagNewHost)
 	bindPort(cmd, &flags)
 	bindOptions(cmd, &flags)
-	return mark(uikit.RequireCloudflared(cmd), msg.MenuEdit, orderEdit)
+	return uikit.MarkIn(uikit.GroupRoutes, uikit.RequireCloudflared(cmd), msg.MenuEdit, orderEdit)
 }
 
 func (g *Group) editRoute(cmd *cobra.Command, flags routeFlags) error {
