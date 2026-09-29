@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/Jonathansl17/cftun/internal/msg"
+	"github.com/Jonathansl17/cftun/internal/service"
 	"github.com/Jonathansl17/cftun/internal/store"
 	"github.com/Jonathansl17/cftun/internal/teardown"
 )
@@ -71,15 +72,16 @@ func newUninstallCmd(a *App) *cobra.Command {
 
 func uninstall(ctx context.Context, a *App) error {
 	steps := teardown.Steps{
-		Runner:    a.Runner,
-		Load:      a.Store.Load,
-		DeleteDNS: a.Routes.DeleteDNS,
-		Tunnels:   &a.Tunnels,
-		Service:   a.Service,
-		Uninstall: a.Installer.Uninstall,
-		Installed: func(ctx context.Context) bool { _, err := a.Tunnels.Version(ctx); return err == nil },
-		Report:    a,
-		Paths:     []string{a.ConfigPath, a.Store.BackupPath(), a.UserCloudflaredDir()},
+		Runner:            a.Runner,
+		Load:              a.Store.Load,
+		DeleteDNS:         a.Routes.DeleteDNS,
+		Tunnels:           &a.Tunnels,
+		Service:           a.Service,
+		Uninstall:         a.Installer.Uninstall,
+		Installed:         func(ctx context.Context) bool { _, err := a.Tunnels.Version(ctx); return err == nil },
+		ServiceRegistered: func() bool { return service.Installed(fileExists) },
+		Report:            a,
+		Paths:             []string{a.ConfigPath, a.Store.BackupPath(), a.UserCloudflaredDir()},
 	}
 	if err := steps.Run(ctx); err != nil {
 		return err

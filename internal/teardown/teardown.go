@@ -39,7 +39,8 @@ type Steps struct {
 	}
 	Uninstall func(ctx context.Context) error
 	Installed func(ctx context.Context) bool
-	Report    interface{ Printf(string, ...any) }
+	ServiceRegistered func() bool
+	Report            interface{ Printf(string, ...any) }
 	// Paths are extra files to delete: config, backup, user credentials.
 	Paths []string
 }
@@ -55,7 +56,7 @@ func (s Steps) Run(ctx context.Context) error {
 		}
 	}
 	installed := s.Installed(ctx)
-	if installed {
+	if installed && s.ServiceRegistered() {
 		record(msg.StepStopService, s.Service.Run(ctx, service.Stop))
 	}
 	if doc, err := s.Load(); err == nil {
