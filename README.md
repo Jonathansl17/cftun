@@ -41,8 +41,7 @@ needed). It needs `curl` or `wget` and nothing else: no Go, no runtime.
 | `CFTUN_VERSION` | `latest` | Release tag to install |
 | `CFTUN_INSTALL_DIR` | `/usr/local/bin` | Target directory |
 
-Re-run the installer to update. To remove cftun itself after
-`cftun uninstall`, delete the binary: `sudo rm /usr/local/bin/cftun`.
+Re-run the installer to update. See [Uninstall](#uninstall) to remove it.
 
 ### Build from source
 
@@ -159,14 +158,25 @@ OpenRC and SysV init.
 
 ## Uninstall
 
+One-liner that removes cloudflared, everything cftun created and the cftun
+binary itself:
+
 ```sh
-cftun uninstall
+curl -fsSL https://raw.githubusercontent.com/Jonathansl17/cftun/master/uninstall.sh | bash
 ```
 
-It stops and unregisters the service, deletes the DNS record of every route
-(with an API token), deletes the tunnel, removes the package and deletes
-`/etc/cloudflared`, `~/.cloudflared`, the logs and the saved token. If a step
-fails, it keeps going and reports every failure at the end.
+| Variable | Default | Purpose |
+|---|---|---|
+| `CFTUN_YES` | `0` | Set to `1` to skip the confirmation |
+| `CFTUN_KEEP_CLOUDFLARED` | `0` | Set to `1` to remove only the cftun binary |
+| `CFTUN_INSTALL_DIR` | `/usr/local/bin` | Where cftun was installed |
+
+To keep cftun and only remove cloudflared, run `cftun uninstall` instead.
+Either way, it stops and unregisters the service, deletes the DNS record of
+every route (with an API token), deletes the tunnel, removes the package and
+deletes `/etc/cloudflared`, `~/.cloudflared`, the logs and the saved token. If
+a step fails, it keeps going and reports every failure at the end; the cftun
+binary is only removed once the cleanup succeeded, so you can re-run it.
 
 ## Troubleshooting
 
