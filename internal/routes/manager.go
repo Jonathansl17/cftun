@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/Jonathansl17/cloudfare/internal/ingress"
-	"github.com/Jonathansl17/cloudfare/internal/msg"
-	"github.com/Jonathansl17/cloudfare/internal/service"
+	"github.com/Jonathansl17/cftun/internal/ingress"
+	"github.com/Jonathansl17/cftun/internal/msg"
+	"github.com/Jonathansl17/cftun/internal/service"
 )
 
 // Manager applies route changes.

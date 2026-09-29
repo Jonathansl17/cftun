@@ -5,9 +5,9 @@ package routes
 import (
 	"context"
 
-	"github.com/Jonathansl17/cloudfare/internal/cloudflared"
-	"github.com/Jonathansl17/cloudfare/internal/ingress"
-	"github.com/Jonathansl17/cloudfare/internal/service"
+	"github.com/Jonathansl17/cftun/internal/cloudflared"
+	"github.com/Jonathansl17/cftun/internal/ingress"
+	"github.com/Jonathansl17/cftun/internal/service"
 )
 
 // Store loads and saves the config.

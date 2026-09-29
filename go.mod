@@ -1,4 +1,4 @@
-module github.com/Jonathansl17/cloudfare
+module github.com/Jonathansl17/cftun
 
 go 1.22
 

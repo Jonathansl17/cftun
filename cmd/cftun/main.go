@@ -8,8 +8,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Jonathansl17/cloudfare/internal/cli"
-	"github.com/Jonathansl17/cloudfare/internal/msg"
+	"github.com/Jonathansl17/cftun/internal/cli"
+	"github.com/Jonathansl17/cftun/internal/msg"
 )
 
 const exitFailure = 1

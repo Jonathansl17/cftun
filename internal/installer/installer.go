@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Jonathansl17/cloudfare/internal/sysexec"
+	"github.com/Jonathansl17/cftun/internal/sysexec"
 )
 
 const downloadDirPattern = "cftun-download-*"

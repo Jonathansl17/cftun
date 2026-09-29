@@ -7,7 +7,7 @@ import (
 	"io/fs"
 	"os"
 
-	"github.com/Jonathansl17/cloudfare/internal/ingress"
+	"github.com/Jonathansl17/cftun/internal/ingress"
 )
 
 const backupSuffix = ".bak"

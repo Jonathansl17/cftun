@@ -5,7 +5,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Jonathansl17/cloudfare/internal/sysexec"
+	"github.com/Jonathansl17/cftun/internal/sysexec"
 )
 
 // Action is one lifecycle operation on the service.

@@ -7,9 +7,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/Jonathansl17/cloudfare/internal/msg"
-	"github.com/Jonathansl17/cloudfare/internal/store"
-	"github.com/Jonathansl17/cloudfare/internal/teardown"
+	"github.com/Jonathansl17/cftun/internal/msg"
+	"github.com/Jonathansl17/cftun/internal/store"
+	"github.com/Jonathansl17/cftun/internal/teardown"
 )
 
 // errCancelled reports that the user declined a confirmation.

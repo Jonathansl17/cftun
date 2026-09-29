@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Jonathansl17/cloudfare/internal/msg"
+	"github.com/Jonathansl17/cftun/internal/msg"
 )
 
 // ErrAborted reports that input ended before an answer was given.

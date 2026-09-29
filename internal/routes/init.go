@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Jonathansl17/cloudfare/internal/cloudflared"
-	"github.com/Jonathansl17/cloudfare/internal/ingress"
+	"github.com/Jonathansl17/cftun/internal/cloudflared"
+	"github.com/Jonathansl17/cftun/internal/ingress"
 )
 
 var (

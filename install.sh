@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Installs the cftun binary from the GitHub releases.
-#   curl -fsSL https://raw.githubusercontent.com/Jonathansl17/cloudfare/master/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/Jonathansl17/cftun/master/install.sh | bash
 # Environment:
 #   CFTUN_VERSION      release tag to install (default: latest)
 #   CFTUN_INSTALL_DIR  target directory (default: /usr/local/bin)
 set -euo pipefail
 
-readonly REPO="Jonathansl17/cloudfare"
+readonly REPO="Jonathansl17/cftun"
 readonly BIN_NAME="cftun"
 readonly CHECKSUMS="checksums.txt"
 readonly VERSION="${CFTUN_VERSION:-latest}"

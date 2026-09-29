@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Jonathansl17/cloudfare/internal/sysexec"
+	"github.com/Jonathansl17/cftun/internal/sysexec"
 )
 
 const (

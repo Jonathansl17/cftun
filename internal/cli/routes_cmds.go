@@ -5,9 +5,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/Jonathansl17/cloudfare/internal/ingress"
-	"github.com/Jonathansl17/cloudfare/internal/msg"
-	"github.com/Jonathansl17/cloudfare/internal/routes"
+	"github.com/Jonathansl17/cftun/internal/ingress"
+	"github.com/Jonathansl17/cftun/internal/msg"
+	"github.com/Jonathansl17/cftun/internal/routes"
 )
 
 // bindRouteOptions registers the flags shared by add, rm and edit.

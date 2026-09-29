@@ -6,9 +6,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/Jonathansl17/cloudfare/internal/cloudflared"
-	"github.com/Jonathansl17/cloudfare/internal/msg"
-	"github.com/Jonathansl17/cloudfare/internal/routes"
+	"github.com/Jonathansl17/cftun/internal/cloudflared"
+	"github.com/Jonathansl17/cftun/internal/msg"
+	"github.com/Jonathansl17/cftun/internal/routes"
 )
 
 func newSetupCmd(a *App) *cobra.Command {

@@ -3,8 +3,8 @@ package cli
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/Jonathansl17/cloudfare/internal/msg"
-	"github.com/Jonathansl17/cloudfare/internal/service"
+	"github.com/Jonathansl17/cftun/internal/msg"
+	"github.com/Jonathansl17/cftun/internal/service"
 )
 
 func newServiceCmd(a *App) *cobra.Command {

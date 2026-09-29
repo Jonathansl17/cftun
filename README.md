@@ -19,7 +19,7 @@ plain HTTP on `localhost`. No Nginx, no open ports, no certificates.
 ### One-liner (recommended, pinned to the latest stable tag)
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Jonathansl17/cloudfare/v1.0.1/install.sh | CFTUN_VERSION=v1.0.1 bash
+curl -fsSL https://raw.githubusercontent.com/Jonathansl17/cftun/v1.0.1/install.sh | CFTUN_VERSION=v1.0.1 bash
 ```
 
 Tags are immutable, so this URL is not affected by the GitHub raw CDN cache.
@@ -27,12 +27,12 @@ Tags are immutable, so this URL is not affected by the GitHub raw CDN cache.
 ### Track the latest release
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Jonathansl17/cloudfare/master/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/Jonathansl17/cftun/master/install.sh | bash
 ```
 
 The installer detects the CPU architecture (amd64, arm64, arm, 386),
 downloads the matching binary from the
-[releases](https://github.com/Jonathansl17/cloudfare/releases), verifies its
+[releases](https://github.com/Jonathansl17/cftun/releases), verifies its
 SHA-256 checksum and installs it to `/usr/local/bin/cftun` (using sudo when
 needed). It needs `curl` or `wget` and nothing else: no Go, no runtime.
 
@@ -49,8 +49,8 @@ Re-run the installer to update. To remove cftun itself after
 Requirements: Go 1.22 or newer and git.
 
 ```sh
-git clone https://github.com/Jonathansl17/cloudfare.git
-cd cloudfare
+git clone https://github.com/Jonathansl17/cftun.git
+cd cftun
 CGO_ENABLED=0 go build -trimpath -ldflags "-s -w -X main.version=$(git describe --tags --always)" -o cftun ./cmd/cftun
 sudo install -m 0755 cftun /usr/local/bin/cftun
 cftun --version

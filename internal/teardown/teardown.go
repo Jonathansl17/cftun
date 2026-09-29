@@ -7,11 +7,11 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/Jonathansl17/cloudfare/internal/cloudflared"
-	"github.com/Jonathansl17/cloudfare/internal/ingress"
-	"github.com/Jonathansl17/cloudfare/internal/msg"
-	"github.com/Jonathansl17/cloudfare/internal/service"
-	"github.com/Jonathansl17/cloudfare/internal/sysexec"
+	"github.com/Jonathansl17/cftun/internal/cloudflared"
+	"github.com/Jonathansl17/cftun/internal/ingress"
+	"github.com/Jonathansl17/cftun/internal/msg"
+	"github.com/Jonathansl17/cftun/internal/service"
+	"github.com/Jonathansl17/cftun/internal/sysexec"
 )
 
 // systemPaths are the locations cloudflared reads or writes outside the

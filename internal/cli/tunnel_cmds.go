@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/Jonathansl17/cloudfare/internal/msg"
+	"github.com/Jonathansl17/cftun/internal/msg"
 )
 
 func newTunnelCmd(a *App) *cobra.Command {

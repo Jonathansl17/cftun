@@ -13,15 +13,15 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/Jonathansl17/cloudfare/internal/cloudflared"
-	"github.com/Jonathansl17/cloudfare/internal/dnsapi"
-	"github.com/Jonathansl17/cloudfare/internal/health"
-	"github.com/Jonathansl17/cloudfare/internal/installer"
-	"github.com/Jonathansl17/cloudfare/internal/prompt"
-	"github.com/Jonathansl17/cloudfare/internal/routes"
-	"github.com/Jonathansl17/cloudfare/internal/service"
-	"github.com/Jonathansl17/cloudfare/internal/store"
-	"github.com/Jonathansl17/cloudfare/internal/sysexec"
+	"github.com/Jonathansl17/cftun/internal/cloudflared"
+	"github.com/Jonathansl17/cftun/internal/dnsapi"
+	"github.com/Jonathansl17/cftun/internal/health"
+	"github.com/Jonathansl17/cftun/internal/installer"
+	"github.com/Jonathansl17/cftun/internal/prompt"
+	"github.com/Jonathansl17/cftun/internal/routes"
+	"github.com/Jonathansl17/cftun/internal/service"
+	"github.com/Jonathansl17/cftun/internal/store"
+	"github.com/Jonathansl17/cftun/internal/sysexec"
 )
 
 const (
