@@ -11,6 +11,8 @@ readonly BIN_NAME="cftun"
 readonly CHECKSUMS="checksums.txt"
 readonly VERSION="${CFTUN_VERSION:-latest}"
 readonly INSTALL_DIR="${CFTUN_INSTALL_DIR:-/usr/local/bin}"
+# Global so the EXIT trap can still see it after main returns.
+TMP_DIR=""
 
 die() {
   printf 'error: %s\n' "$1" >&2
@@ -68,19 +70,19 @@ install_binary() {
 
 main() {
   [[ "$(uname -s)" == "Linux" ]] || die "cftun only supports Linux"
-  local arch asset base tmp dest
+  local arch asset base dest
   arch="$(detect_arch)"
   asset="${BIN_NAME}-linux-${arch}"
   base="$(release_url)"
-  tmp="$(mktemp -d)"
-  trap 'rm -rf "$tmp"' EXIT
+  TMP_DIR="$(mktemp -d)"
+  trap 'rm -rf "$TMP_DIR"' EXIT
 
   printf 'Downloading %s (%s)...\n' "$asset" "$VERSION"
-  download "${base}/${asset}" "${tmp}/${asset}"
-  download "${base}/${CHECKSUMS}" "${tmp}/${CHECKSUMS}"
-  verify "$tmp" "$asset"
+  download "${base}/${asset}" "${TMP_DIR}/${asset}"
+  download "${base}/${CHECKSUMS}" "${TMP_DIR}/${CHECKSUMS}"
+  verify "$TMP_DIR" "$asset"
 
-  dest="$(install_binary "${tmp}/${asset}")"
+  dest="$(install_binary "${TMP_DIR}/${asset}")"
   printf 'Installed %s\n' "$("$dest" --version)"
   printf 'Next step: run "%s setup"\n' "$BIN_NAME"
 }

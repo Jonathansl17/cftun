@@ -19,7 +19,7 @@ plain HTTP on `localhost`. No Nginx, no open ports, no certificates.
 ### One-liner (recommended, pinned to the latest stable tag)
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/Jonathansl17/cloudfare/v1.0.0/install.sh | CFTUN_VERSION=v1.0.0 bash
+curl -fsSL https://raw.githubusercontent.com/Jonathansl17/cloudfare/v1.0.1/install.sh | CFTUN_VERSION=v1.0.1 bash
 ```
 
 Tags are immutable, so this URL is not affected by the GitHub raw CDN cache.
@@ -71,14 +71,14 @@ ssh user@server 'sudo install -m 0755 ~/cftun /usr/local/bin/cftun'
 To build every architecture at once into `dist/` with checksums:
 
 ```sh
-scripts/build-release.sh v1.0.0
+scripts/build-release.sh v1.0.1
 ```
 
 ### Publishing a release
 
 ```sh
-scripts/build-release.sh v1.0.0
-gh release create v1.0.0 dist/* --title "v1.0.0" --notes "..."
+scripts/build-release.sh v1.0.1
+gh release create v1.0.1 dist/* --title "v1.0.1" --notes "..."
 ```
 
 ## Quick start
