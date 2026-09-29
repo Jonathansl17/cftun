@@ -12,7 +12,10 @@ import (
 	"github.com/Jonathansl17/cftun/internal/sysexec"
 )
 
-const emptyConfigPattern = "cftun-quick-*.yml"
+const (
+	emptyConfigPattern = "cftun-quick-*.yml"
+	emptyConfigContent = "no-autoupdate: true\n"
+)
 
 func newQuickTunnelCmd(a *App) *cobra.Command {
 	var port string
@@ -43,6 +46,10 @@ func runQuickTunnel(ctx context.Context, a *App, port string) error {
 		return fmt.Errorf("create empty config: %w", err)
 	}
 	defer os.Remove(empty.Name())
+	if _, err := empty.WriteString(emptyConfigContent); err != nil {
+		empty.Close()
+		return fmt.Errorf("write empty config: %w", err)
+	}
 	if err := empty.Close(); err != nil {
 		return fmt.Errorf("close empty config: %w", err)
 	}
