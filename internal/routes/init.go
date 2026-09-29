@@ -14,7 +14,7 @@ var (
 	// ErrConfigExists protects an existing config from being overwritten.
 	ErrConfigExists = errors.New("config already exists, pass --force to overwrite it")
 	// ErrTunnelNotFound reports a tunnel name or ID that the account lacks.
-	ErrTunnelNotFound = errors.New("tunnel not found, create it with `cftun tunnel create`")
+	ErrTunnelNotFound = errors.New("tunnel not found, create it with `cftun tunnels create`")
 )
 
 // Init writes a fresh config pointing at tunnelRef, whose credentials live

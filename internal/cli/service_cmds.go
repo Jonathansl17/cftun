@@ -10,8 +10,9 @@ import (
 func newServiceCmd(a *App) *cobra.Command {
 	cmd := &cobra.Command{Use: "service", Short: msg.ServiceShort}
 	cmd.AddCommand(&cobra.Command{
-		Use:   "install",
-		Short: msg.ServiceInstallShort,
+		Use:         "install",
+		Short:       msg.ServiceInstallShort,
+		Annotations: needsCloudflared,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			return installService(cmd, a)
 		},

@@ -4,16 +4,21 @@ package sysexec
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"os/exec"
 	"os/signal"
 	"strings"
+	"syscall"
 )
 
 // elevator is the program used to gain root privileges.
-const elevator = "sudo"
+const (
+	elevator            = "sudo"
+	exitCodeInterrupted = 130
+)
 
 // Command describes one external program invocation.
 type Command struct {
@@ -90,4 +95,14 @@ func (s *Shell) resolve(cmd Command) Command {
 		return cmd
 	}
 	return Command{Name: elevator, Args: append([]string{cmd.Name}, cmd.Args...)}
+}
+
+// Interrupted reports whether err is a child exiting because of Ctrl+C.
+func Interrupted(err error) bool {
+	var exit *exec.ExitError
+	if !errors.As(err, &exit) {
+		return false
+	}
+	status, ok := exit.Sys().(syscall.WaitStatus)
+	return ok && (status.Signaled() && status.Signal() == syscall.SIGINT || status.ExitStatus() == exitCodeInterrupted)
 }

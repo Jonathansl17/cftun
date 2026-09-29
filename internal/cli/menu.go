@@ -18,6 +18,7 @@ type entry struct {
 
 var mainMenu = []entry{
 	{label: msg.MenuSetup, path: []string{"setup"}},
+	{label: msg.MenuQuick, path: []string{"tunnel"}},
 	{label: msg.MenuRoutes, children: []entry{
 		{label: msg.MenuList, path: []string{"list"}},
 		{label: msg.MenuAdd, path: []string{"add"}},
@@ -37,9 +38,9 @@ var mainMenu = []entry{
 		{label: msg.MenuServiceLogs, path: []string{"service", "logs"}},
 	}},
 	{label: msg.MenuTunnel, children: []entry{
-		{label: msg.MenuTunnelList, path: []string{"tunnel", "list"}},
-		{label: msg.MenuTunnelCreate, path: []string{"tunnel", "create"}},
-		{label: msg.MenuTunnelDelete, path: []string{"tunnel", "delete"}},
+		{label: msg.MenuTunnelList, path: []string{"tunnels", "list"}},
+		{label: msg.MenuTunnelCreate, path: []string{"tunnels", "create"}},
+		{label: msg.MenuTunnelDelete, path: []string{"tunnels", "delete"}},
 		{label: msg.MenuInit, path: []string{"init"}},
 	}},
 	{label: msg.MenuAccount, children: []entry{
@@ -88,7 +89,11 @@ func dispatch(a *App, root *cobra.Command, e entry) error {
 		return err
 	}
 	cmd.SetContext(root.Context())
-	if err := cmd.RunE(cmd, nil); err != nil {
+	err = ensureRequirements(cmd, a)
+	if err == nil {
+		err = cmd.RunE(cmd, nil)
+	}
+	if err != nil {
 		if errors.Is(err, prompt.ErrAborted) {
 			return err
 		}

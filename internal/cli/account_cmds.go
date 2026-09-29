@@ -13,8 +13,9 @@ import (
 
 func newLoginCmd(a *App) *cobra.Command {
 	return &cobra.Command{
-		Use:   "login",
-		Short: msg.LoginShort,
+		Use:         "login",
+		Short:       msg.LoginShort,
+		Annotations: needsCloudflared,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			if loggedIn(a) {
 				a.Printf(msg.InfoAlreadyLoggedIn, certPath(a))

@@ -63,8 +63,9 @@ func newCheckCmd(a *App) *cobra.Command {
 
 func newValidateCmd(a *App) *cobra.Command {
 	return &cobra.Command{
-		Use:   "validate",
-		Short: msg.ValidateShort,
+		Use:         "validate",
+		Short:       msg.ValidateShort,
+		Annotations: needsCloudflared,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			return a.Routes.Validate(cmd.Context())
 		},

@@ -17,11 +17,12 @@ const (
 	// HomeDir is the per-user directory holding cert.pem and tunnel credentials.
 	HomeDir = ".cloudflared"
 	// CertFile is written by `cloudflared login` inside HomeDir.
-	CertFile        = "cert.pem"
-	credentialsExt  = ".json"
-	listOutputJSON  = "json"
-	versionArg      = "--version"
-	forceDeleteFlag = "-f"
+	CertFile         = "cert.pem"
+	credentialsExt   = ".json"
+	listOutputJSON   = "json"
+	versionArg       = "--version"
+	forceDeleteFlag  = "-f"
+	quickGracePeriod = "1s"
 )
 
 // Tunnel is one entry of `cloudflared tunnel list`.
@@ -80,6 +81,14 @@ func (c Client) RouteDNS(ctx context.Context, tunnel, hostname string) error {
 // ValidateIngress checks the ingress rules of the config at path.
 func (c Client) ValidateIngress(ctx context.Context, path string) (string, error) {
 	return c.Runner.Output(ctx, c.cmd("tunnel", "--config", path, "ingress", "validate"))
+}
+
+// QuickTunnel runs an account-less tunnel to url until interrupted. The empty
+// config keeps cloudflared from loading a named-tunnel config, which it
+// refuses to combine with a quick tunnel.
+func (c Client) QuickTunnel(ctx context.Context, url, emptyConfig string) error {
+	return c.Runner.Stream(ctx, c.cmd("tunnel", "--config", emptyConfig, "--no-autoupdate",
+		"--grace-period", quickGracePeriod, "--url", url))
 }
 
 // InstallService registers cloudflared as a system service.

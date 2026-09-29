@@ -21,13 +21,13 @@ func NewRoot(version string, in io.Reader, out io.Writer) *cobra.Command {
 		Long:          msg.RootLong,
 		SilenceUsage:  true,
 		SilenceErrors: true,
-		PersistentPreRunE: func(*cobra.Command, []string) error {
+		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 			built, err := NewApp(ResolveConfigPath(configFlag), in, out)
 			if err != nil {
 				return err
 			}
 			*app = *built
-			return nil
+			return ensureRequirements(cmd, app)
 		},
 		RunE: func(cmd *cobra.Command, _ []string) error { return runMenu(app, cmd.Root()) },
 	}
@@ -35,7 +35,7 @@ func NewRoot(version string, in io.Reader, out io.Writer) *cobra.Command {
 	root.SetOut(out)
 	root.AddCommand(
 		newSetupCmd(app), newInstallCmd(app), newUninstallCmd(app), newLoginCmd(app),
-		newTokenCmd(app), newTunnelCmd(app), newInitCmd(app), newAddCmd(app),
+		newTokenCmd(app), newTunnelsCmd(app), newQuickTunnelCmd(app), newInitCmd(app), newAddCmd(app),
 		newRemoveCmd(app), newEditCmd(app), newListCmd(app), newCheckCmd(app),
 		newValidateCmd(app), newServiceCmd(app),
 	)

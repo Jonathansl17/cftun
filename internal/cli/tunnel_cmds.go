@@ -9,8 +9,8 @@ import (
 	"github.com/Jonathansl17/cftun/internal/msg"
 )
 
-func newTunnelCmd(a *App) *cobra.Command {
-	cmd := &cobra.Command{Use: "tunnel", Short: msg.TunnelShort}
+func newTunnelsCmd(a *App) *cobra.Command {
+	cmd := &cobra.Command{Use: "tunnels", Short: msg.TunnelShort, Annotations: needsCloudflared}
 	cmd.AddCommand(
 		&cobra.Command{
 			Use:   "create [name]",

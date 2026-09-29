@@ -14,8 +14,9 @@ func newEditCmd(a *App) *cobra.Command {
 	var host, newHost, port string
 	var opts routes.Options
 	cmd := &cobra.Command{
-		Use:   "edit",
-		Short: msg.EditShort,
+		Use:         "edit",
+		Short:       msg.EditShort,
+		Annotations: needsCloudflared,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			rule, err := pickRule(a, host)
 			if err != nil {

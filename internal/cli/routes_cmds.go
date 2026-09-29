@@ -20,8 +20,9 @@ func newAddCmd(a *App) *cobra.Command {
 	var host, port string
 	var opts routes.Options
 	cmd := &cobra.Command{
-		Use:   "add",
-		Short: msg.AddShort,
+		Use:         "add",
+		Short:       msg.AddShort,
+		Annotations: needsCloudflared,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			return addRoute(cmd.Context(), a, host, port, opts)
 		},
@@ -36,9 +37,10 @@ func newRemoveCmd(a *App) *cobra.Command {
 	var host string
 	var opts routes.Options
 	cmd := &cobra.Command{
-		Use:     "rm",
-		Aliases: []string{"remove", "delete"},
-		Short:   msg.RemoveShort,
+		Use:         "rm",
+		Aliases:     []string{"remove", "delete"},
+		Short:       msg.RemoveShort,
+		Annotations: needsCloudflared,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			rule, err := pickRule(a, host)
 			if err != nil {

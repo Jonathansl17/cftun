@@ -26,6 +26,14 @@ func newSetupCmd(a *App) *cobra.Command {
 // already done, so running it again is safe.
 func runSetup(cmd *cobra.Command, a *App) error {
 	ctx := cmd.Context()
+	hasDomain, err := a.Prompt.Confirm(msg.ConfirmHasDomain)
+	if err != nil {
+		return err
+	}
+	if !hasDomain {
+		a.Printf(msg.InfoNoDomain)
+		return runQuickTunnel(ctx, a, "")
+	}
 	steps := []struct {
 		title string
 		run   func() error

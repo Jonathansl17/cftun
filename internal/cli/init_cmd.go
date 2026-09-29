@@ -12,8 +12,9 @@ func newInitCmd(a *App) *cobra.Command {
 	var tunnel string
 	var force bool
 	cmd := &cobra.Command{
-		Use:   "init",
-		Short: msg.InitShort,
+		Use:         "init",
+		Short:       msg.InitShort,
+		Annotations: needsCloudflared,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			name, err := valueOrAsk(a, tunnel, msg.PromptTunnelName, notEmpty)
 			if err != nil {

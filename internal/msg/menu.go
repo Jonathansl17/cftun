@@ -7,9 +7,10 @@ const (
 	MenuBack  = "Back"
 
 	MenuSetup     = "Guided setup (start here)"
+	MenuQuick     = "Temporary tunnel (no domain needed)"
 	MenuRoutes    = "Routes (hostname -> port)"
 	MenuService   = "Service"
-	MenuTunnel    = "Tunnel"
+	MenuTunnel    = "Named tunnels"
 	MenuAccount   = "cloudflared, login and API token"
 	MenuUninstall = "Uninstall everything"
 
