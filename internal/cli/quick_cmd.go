@@ -6,6 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/Jonathansl17/cftun/internal/cli/uikit"
 	"github.com/Jonathansl17/cftun/internal/ingress"
 	"github.com/Jonathansl17/cftun/internal/msg"
 	"github.com/Jonathansl17/cftun/internal/quicktunnel"
@@ -26,7 +27,7 @@ func newQuickTunnelCmd(a *App) *cobra.Command {
 }
 
 func runQuickTunnel(ctx context.Context, a *App, port string) error {
-	p, err := askPort(a, port, msg.PromptPort)
+	p, err := uikit.AskPort(a.Session, port, msg.PromptPort)
 	if err != nil {
 		return err
 	}

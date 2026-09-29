@@ -2,25 +2,15 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"os/signal"
-	"syscall"
 
 	"github.com/Jonathansl17/cftun/internal/cli"
-	"github.com/Jonathansl17/cftun/internal/msg"
 )
 
-const exitFailure = 1
-
-var version = "dev"
-
 func main() {
-	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM)
-	err := cli.NewRoot(version, os.Stdin, os.Stdout).ExecuteContext(ctx)
+	ctx, stop := signal.NotifyContext(context.Background(), shutdownSignals...)
+	code := cli.Run(ctx, cli.Streams{In: os.Stdin, Out: os.Stdout, Err: os.Stderr}, version)
 	stop()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, msg.ErrorFormat, err)
-		os.Exit(exitFailure)
-	}
+	os.Exit(code)
 }

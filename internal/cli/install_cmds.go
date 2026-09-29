@@ -2,16 +2,11 @@ package cli
 
 import (
 	"context"
-	"errors"
-	"fmt"
 
 	"github.com/spf13/cobra"
 
 	"github.com/Jonathansl17/cftun/internal/msg"
-	"github.com/Jonathansl17/cftun/internal/store"
 )
-
-var errCancelled = errors.New(msg.ErrCancelled)
 
 func newInstallCmd(a *App) *cobra.Command {
 	var force bool
@@ -55,12 +50,8 @@ func newUninstallCmd(a *App) *cobra.Command {
 		Long:  msg.UninstallLong,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			if !yes {
-				ok, err := a.Prompt.Confirm(msg.ConfirmUninstall)
-				if err != nil {
+				if err := a.ConfirmOrCancel(msg.ConfirmUninstall); err != nil {
 					return err
-				}
-				if !ok {
-					return errCancelled
 				}
 			}
 			return uninstall(cmd.Context(), a, keepCftun)
@@ -87,8 +78,4 @@ func uninstall(ctx context.Context, a *App, keepCftun bool) error {
 		return nil
 	}
 	return removeCftun(ctx, a)
-}
-
-func errConfigMissing(a *App) error {
-	return fmt.Errorf("%s: %w", a.ConfigPath, store.ErrMissing)
 }

@@ -1,36 +1,39 @@
 package cli
 
 import (
+	"context"
 	"path/filepath"
 
 	"github.com/spf13/cobra"
 
+	"github.com/Jonathansl17/cftun/internal/cli/uikit"
 	"github.com/Jonathansl17/cftun/internal/dnsapi"
 	"github.com/Jonathansl17/cftun/internal/msg"
 	"github.com/Jonathansl17/cftun/internal/paths"
 )
 
 func newLoginCmd(a *App) *cobra.Command {
-	return &cobra.Command{
-		Use:         "login",
-		Short:       msg.LoginShort,
-		Annotations: needsCloudflared,
+	cmd := &cobra.Command{
+		Use:   "login",
+		Short: msg.LoginShort,
 		RunE: func(cmd *cobra.Command, _ []string) error {
-			if loggedIn(a) {
-				a.Printf(msg.InfoAlreadyLoggedIn, certPath(a))
-				return nil
-			}
-			return a.Tunnels.Login(cmd.Context())
+			return ensureLogin(cmd.Context(), a)
 		},
 	}
+	return uikit.RequireCloudflared(cmd)
 }
 
-func certPath(a *App) string {
-	return filepath.Join(a.UserCloudflaredDir(), paths.CertFile)
-}
-
-func loggedIn(a *App) bool {
-	return a.Files.Exists(certPath(a))
+func ensureLogin(ctx context.Context, a *App) error {
+	dir, err := a.userCloudflaredDir()
+	if err != nil {
+		return err
+	}
+	cert := filepath.Join(dir, paths.CertFile)
+	if a.Files.Exists(cert) {
+		a.Printf(msg.InfoAlreadyLoggedIn, cert)
+		return nil
+	}
+	return a.Tunnels.Login(ctx)
 }
 
 func newTokenCmd(a *App) *cobra.Command {
@@ -40,7 +43,7 @@ func newTokenCmd(a *App) *cobra.Command {
 			Use:   "set [token]",
 			Short: msg.TokenSetShort,
 			Args:  cobra.MaximumNArgs(1),
-			RunE:  func(_ *cobra.Command, args []string) error { return setToken(a, firstArg(args)) },
+			RunE:  func(_ *cobra.Command, args []string) error { return setToken(a, uikit.FirstArg(args)) },
 		},
 		&cobra.Command{
 			Use:   "clear",
@@ -70,7 +73,7 @@ func newTokenCmd(a *App) *cobra.Command {
 }
 
 func setToken(a *App, value string) error {
-	token, err := valueOrAsk(a, value, msg.PromptToken, notEmpty)
+	token, err := a.ValueOrAsk(value, msg.PromptToken, uikit.NotEmpty)
 	if err != nil {
 		return err
 	}

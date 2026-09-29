@@ -30,15 +30,6 @@ func CurrentValue(current string) string {
 }
 
 const (
-	ErrorFormat           = "error: %v\n"
-	ErrChoiceRange        = "enter a number between 1 and %d"
-	ErrEmpty              = "a value is required"
-	ErrNoRules            = "there are no routes yet, add one first"
-	ErrCancelled          = "cancelled"
-	ErrCloudflaredMissing = "cloudflared is required, install it with \"cftun install\""
-)
-
-const (
 	InfoAdded            = "Route ready: https://%s -> %s\n"
 	InfoRemoved          = "Route removed: %s\n"
 	InfoNoRules          = "No routes yet. Add one with \"cftun add\".\n"
@@ -71,9 +62,7 @@ const (
 
 const (
 	ListHeader       = "HOSTNAME\tSERVICE\tLOCAL"
-	ListRowFormat    = "%s\t%s\t%s\n"
 	TunnelHeader     = "NAME\tID"
-	TunnelRowFormat  = "%s\t%s\n"
 	CheckTitle       = "\n%s\n"
 	CheckLine        = "  %-40s %s\n"
 	CheckHint        = "    hint: %s\n"

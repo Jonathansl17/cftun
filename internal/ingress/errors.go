@@ -1,14 +1,11 @@
 package ingress
 
-import (
-	"errors"
-	"fmt"
-)
+import "errors"
 
 var (
-	ErrMalformed       = errors.New("config must be a mapping with an ingress list")
-	ErrDuplicate       = errors.New("hostname already has a rule")
-	ErrNotFound        = errors.New("hostname has no rule")
-	ErrInvalidHostname = errors.New("invalid hostname, expected something like app.example.com")
-	ErrInvalidPort     = fmt.Errorf("invalid port, expected a number between %d and %d", MinPort, MaxPort)
+	ErrMalformed       = errors.New("malformed ingress config")
+	ErrDuplicate       = errors.New("duplicate hostname")
+	ErrNotFound        = errors.New("hostname not found")
+	ErrInvalidHostname = errors.New("invalid hostname")
+	ErrInvalidPort     = errors.New("invalid port")
 )

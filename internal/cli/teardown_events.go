@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/Jonathansl17/cftun/internal/cli/uikit"
 	"github.com/Jonathansl17/cftun/internal/msg"
 	"github.com/Jonathansl17/cftun/internal/teardown"
 )
@@ -12,9 +13,9 @@ import (
 func (p teardownPrinter) Observe(e teardown.Event) {
 	switch e.Kind {
 	case teardown.EventStepFailed:
-		p.Report.Printf(msg.WarnStepFailed, stepLabel(e.Step, e.Subject), e.Err)
+		p.Report.Printf(msg.WarnStepFailed, stepLabel(e.Step, e.Subject), uikit.Describe(e.Err))
 	case teardown.EventNoConfig:
-		p.Report.Printf(msg.WarnNoConfig, e.Err)
+		p.Report.Printf(msg.WarnNoConfig, uikit.Describe(e.Err))
 	case teardown.EventRemoving:
 		p.Report.Printf(msg.InfoRemoving, e.Subject)
 	case teardown.EventDNSManual:
@@ -32,7 +33,7 @@ func stepLabel(step teardown.Step, subject string) string {
 }
 
 func teardownParams(a *App) (teardown.Params, error) {
-	config, err := filepath.Abs(a.ConfigPath)
+	config, err := filepath.Abs(a.Store.Path())
 	if err != nil {
 		return teardown.Params{}, fmt.Errorf(resolvePathFormat, err)
 	}
@@ -40,7 +41,11 @@ func teardownParams(a *App) (teardown.Params, error) {
 	if err != nil {
 		return teardown.Params{}, fmt.Errorf(resolvePathFormat, err)
 	}
-	return teardown.Params{ConfigPath: config, BackupPath: backup, UserDir: a.UserCloudflaredDir()}, nil
+	userDir, err := a.userCloudflaredDir()
+	if err != nil {
+		return teardown.Params{}, err
+	}
+	return teardown.Params{ConfigPath: config, BackupPath: backup, UserDir: userDir}, nil
 }
 
 func teardownFailure(err error) error {
@@ -58,7 +63,8 @@ func teardownFailure(err error) error {
 func stepFailure(err error) error {
 	var step *teardown.StepError
 	if !errors.As(err, &step) {
-		return present(err)
+		return err
 	}
-	return fmt.Errorf(stepErrorFormat, stepLabel(step.Step, step.Subject), present(step.Err))
+	text := fmt.Sprintf(stepTextFormat, stepLabel(step.Step, step.Subject), uikit.Describe(step.Err))
+	return uikit.NewDisplayError(text, err)
 }
